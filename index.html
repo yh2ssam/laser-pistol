@@ -68,6 +68,13 @@ select.tin{background:#fff}
 .vshield.start::after{content:'▶';color:#fff;font-size:44px;background:#0009;border-radius:50%;width:76px;height:76px;display:flex;align-items:center;justify-content:center;padding-left:6px}
 .pre{white-space:pre-wrap}
 .ana b{display:block;margin-top:8px}
+/* 사격 손 선택 · 영점 잡기 */
+#handask{position:fixed;inset:0;background:#0f172ad9;z-index:90;display:flex;align-items:center;justify-content:center;padding:16px}
+.zc{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;margin:8px 0}
+.zc table{width:100%;border-collapse:collapse;font-size:13px}
+.zc td,.zc th{border:1px solid #e2e8f0;padding:4px 6px;text-align:center}
+.zc th{background:#f1f5f9}
+.zdot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}
 </style>
 </head>
 <body>
@@ -86,8 +93,16 @@ select.tin{background:#fff}
   <div class="res" id="lg-msg"></div>
 </div>
 </div>
+<div id="handask" class="hide">
+<div class="lg-box">
+  <h2>✋ 어느 손으로 사격하나요?</h2>
+  <p class="mut">한 번만 고르면 이 기기에 기억해요. 나중에 위쪽 ✋ 버튼에서 바꿀 수 있어요.</p>
+  <div class="row"><button class="btn big" id="hand-R" type="button">오른손</button></div>
+  <div class="row" style="margin-top:8px"><button class="btn big sec" id="hand-L" type="button">왼손</button></div>
+</div>
+</div>
 <header>
-<h1 style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap"><span>🎯 레이저 권총 사격 입문 · 자세와 조준선 정렬</span><span style="font-size:13px;font-weight:400"><span id="who"></span> <button id="logout" class="chip hide" type="button" style="color:#0f172a">로그아웃</button></span></h1>
+<h1 style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap"><span>🎯 레이저 권총 사격 입문 · 자세와 조준선 정렬</span><span style="font-size:13px;font-weight:400"><span id="who"></span> <button id="hand-btn" class="chip hide" type="button" style="color:#0f172a">✋ 오른손</button> <button id="logout" class="chip hide" type="button" style="color:#0f172a">로그아웃</button></span></h1>
 </header>
 <nav>
 <button class="chip on" data-t="t-safe" type="button">① 안전·개념</button>
@@ -96,6 +111,7 @@ select.tin{background:#fff}
 <button class="chip" data-t="t-aim" type="button">④ 조준 연습</button>
 <button class="chip" data-t="t-quiz" type="button">⑤ 퀴즈</button>
 <button class="chip" data-t="t-game" type="button">⑥ 게임</button>
+<button class="chip" data-t="t-zero" type="button">🎯 영점 잡기</button>
 <button class="chip" data-t="t-shot" type="button">⑦ 실사 기록</button>
 <button class="chip" data-t="t-rec" type="button">⑧ 기록 저장</button>
 <button class="chip" data-t="t-grow" type="button">⑨ 내 성장</button>
@@ -207,6 +223,23 @@ select.tin{background:#fff}
   <div class="res" id="g-res"></div>
 </div>
 </section>
+<!-- 🎯 영점 잡기 -->
+<section class="tab hide" id="t-zero">
+<div class="card"><h2>🎯 영점 잡기와 조준점 보정</h2>
+  <div class="zc" id="zc-body"></div>
+  <div class="row"><button class="btn sec" id="zc-prev" type="button">← 이전</button><button class="btn" id="zc-next" type="button">다음 →</button><span class="mut" id="zc-pg"></span></div>
+</div>
+<div class="card"><h2>🔫 실습: 시사 → 편차 분석 → 보정 → 결과 비교</h2>
+  <div class="warn">이 수업의 총은 영점 조절이 안 돼요. 그래서 <b>조준점 보정</b>을 씁니다. 총이나 사격 거리가 바뀌면 보정값도 다시 잡아야 해요.</div>
+  <div class="res" id="z-step"></div>
+  <svg id="z-svg" viewBox="0 0 300 300" style="max-width:380px;margin:8px auto 0"></svg>
+  <p class="mut"><span class="zdot" style="background:#f97316"></span>1회 <span class="zdot" style="background:#2563eb"></span>2회 <span class="zdot" style="background:#16a34a"></span>3회 <span class="zdot" style="background:#9333ea"></span>보정 사격 · 빨간 +는 9발의 중심</p>
+  <div class="row" style="margin:6px 0"><button class="btn sec" id="z-undo" type="button">↩ 마지막 발 취소</button><button class="btn sec" id="z-reset" type="button">🗑 처음부터 다시</button><button class="btn sec hide" id="z-resend" type="button">☁️ 저장 다시 시도</button></div>
+  <div class="res hide" id="z-save"></div>
+  <div class="res" id="z-out"></div>
+</div>
+<div class="card"><h2>💭 생각해 보기</h2><div id="zq"></div></div>
+</section>
 <!-- ⑦ 실사 기록 -->
 <section class="tab hide" id="t-shot">
 <div class="card"><h2>🔫 실제 레이저 권총 명중 기록</h2>
@@ -223,10 +256,12 @@ select.tin{background:#fff}
   <div class="sg" id="sh-btns"></div>
   <div class="row" style="margin:6px 0"><b><span id="sh-cnt">0</span>/10발</b><button class="btn sec" id="sh-undo" type="button">↩ 마지막 발 취소</button><button class="btn sec" id="sh-reset" type="button">🗑 새 시리즈</button></div>
   <div class="row" id="sh-list"></div>
-  <div class="row" style="margin-top:6px"><span class="mut">사격하는 손:</span><select id="sh-hand" class="tin"><option value="R">오른손</option><option value="L">왼손</option></select></div>
+  <div class="row" style="margin-top:6px"><span class="mut">사격하는 손: <b id="sh-handtxt"></b> (위의 ✋ 버튼에서 바꿀 수 있어요)</span></div>
+  <div class="row" style="margin-top:6px"><span class="mut">영점 보정:</span><select id="sh-applied" class="tin"><option value="no">적용 안 함</option><option value="yes">조준점 보정을 적용하고 쏨</option></select></div>
+  <div class="mut" id="sh-zhint"></div>
   <div class="res" id="sh-sum"></div>
   <div class="res ana" id="sh-ana"></div>
-  <div class="row" style="margin-top:8px"><button class="btn" id="sh-ai" type="button">🤖 AI 상세 코칭 받기</button><span class="mut">3발 이상 입력하면 사용할 수 있어요</span></div>
+  <div class="row" style="margin-top:8px"><button class="btn" id="sh-ai" type="button">🤖 AI 상세 코칭 받기 (하루 1번)</button><span class="mut">10발을 모두 입력하면 쓸 수 있어요</span></div>
   <div class="res pre hide" id="sh-aires"></div>
   <p><button class="btn" id="sh-go" type="button">기록 저장하러 가기 →</button></p>
 </div>
@@ -290,15 +325,17 @@ const SW={run:false,t0:0,id:0};
 const SS={run:false,t0:0,acc:0,id:0,saved:false};
 const st={run:false,cancel:false,measuring:false,got:false,cur:0,samples:[],t0:0,handler:null};
 let ytp=null,ytReady=false;
+let HAND='R';
 const say=(id,t,c)=>{const m=$(id);m.className='res '+(c||'');m.innerHTML=t;};
 /* ================= 탭 ================= */
-const TABIDS=['t-safe','t-pose','t-stab','t-aim','t-quiz','t-game','t-shot','t-rec','t-grow'];
+const TABIDS=['t-safe','t-pose','t-stab','t-aim','t-quiz','t-game','t-zero','t-shot','t-rec','t-grow'];
 const NAVB=document.querySelectorAll('nav .chip');
 function showTab(id){
   if(st.run)st.cancel=true;
   if(ytReady&&id!=='t-pose'&&ytp&&ytp.pauseVideo)ytp.pauseVideo();
   TABIDS.forEach(t=>$(t).classList.toggle('hide',t!==id));
   NAVB.forEach(b=>b.classList.toggle('on',b.dataset.t===id));
+  if(id==='t-shot')shHint();
   if(id==='t-rec')recRefresh();
   if(id==='t-grow')growLoad(false);
   window.scrollTo(0,0);
@@ -319,12 +356,12 @@ function drawSight(el,dx,dy,rot,small){
 }
 drawSight($('ref-svg'),0,0);
 const MISS=[
- ['✅ 올바른 정렬',0,0,0,'가늠쇠가 홈 한가운데, 윗면 높이가 같아요. → 탄은 표적 중앙으로'],
- ['⬆ 가늠쇠가 높음',0,-18,0,'가늠쇠가 가늠자보다 튀어나왔어요. → 탄이 표적 위쪽으로'],
- ['⬇ 가늠쇠가 낮음',0,14,0,'가늠쇠가 홈 속으로 가라앉았어요. → 탄이 표적 아래쪽으로'],
- ['⬅ 왼쪽으로 치우침',-9,0,0,'왼쪽 빛틈이 좁아요. → 탄이 표적 왼쪽으로'],
- ['➡ 오른쪽으로 치우침',9,0,0,'오른쪽 빛틈이 좁아요. → 탄이 표적 오른쪽으로'],
- ['🔄 총이 기울어짐',0,0,9,'가늠자가 수평이 아니에요. → 정렬이 틀어져 엉뚱한 곳으로 빗나가요']
+['✅ 올바른 정렬',0,0,0,'가늠쇠가 홈 한가운데, 윗면 높이가 같아요. → 탄은 표적 중앙으로'],
+['⬆ 가늠쇠가 높음',0,-18,0,'가늠쇠가 가늠자보다 튀어나왔어요. → 탄이 표적 위쪽으로'],
+['⬇ 가늠쇠가 낮음',0,14,0,'가늠쇠가 홈 속으로 가라앉았어요. → 탄이 표적 아래쪽으로'],
+['⬅ 왼쪽으로 치우침',-9,0,0,'왼쪽 빛틈이 좁아요. → 탄이 표적 왼쪽으로'],
+['➡ 오른쪽으로 치우침',9,0,0,'오른쪽 빛틈이 좁아요. → 탄이 표적 오른쪽으로'],
+['🔄 총이 기울어짐',0,0,9,'가늠자가 수평이 아니에요. → 정렬이 틀어져 엉뚱한 곳으로 빗나가요']
 ];
 $('miss-cards').innerHTML=MISS.map((m,i)=>`<div class="mc"><b>${m[0]}</b><svg id="mc${i}" viewBox="0 0 300 140"></svg><p>${m[4]}</p></div>`).join('');
 MISS.forEach((m,i)=>drawSight($('mc'+i),m[1],m[2],m[3],true));
@@ -369,11 +406,11 @@ setInterval(()=>{
 const POSE={
 one:{label:'한 손',
   desc:`<p><b>☝️ 한 손 사격</b>은 레이저 권총(공기권총) 경기에서 쓰는 실제 자세입니다. 한 팔로 총을 지탱하므로 <b>몸의 균형</b>과 <b>손목 고정</b>이 중요합니다.</p>
-   <ul><li>몸을 표적에 대해 비스듬히 세워 사격 팔·눈·표적이 일직선이 되게 합니다.</li>
+   <ul><li>표적에 대해 <b>몸을 90도로 돌려 서서</b>(옆으로 서서) 사격 팔·눈·표적이 일직선이 되게 합니다. 상체는 곧게 세웁니다.</li>
    <li>반대 손은 허리나 주머니에 두어 몸의 흔들림을 줄입니다.</li>
    <li>팔이 피로하면 조준선이 떨립니다. 조준이 길어지면 팔을 내리고 쉬었다가 다시 올립니다.</li></ul>`,
   items:['<b>발</b>: 어깨너비로 벌리고 체중을 양발에 고르게 둡니다.',
-   '<b>몸</b>: 표적을 향해 비스듬히 서고, 상체를 곧게 세웁니다.',
+   '<b>몸</b>: 표적에 대해 몸을 90도로 돌려 서고, 상체를 곧게 세웁니다.',
    '<b>사격 팔</b>: 어깨 높이로 곧게 뻗고 팔꿈치를 과하게 꺾지 않습니다.',
    '<b>그립</b>: 손바닥과 손가락으로 단단히 쥐고 손목을 일직선으로 유지합니다.',
    '<b>검지</b>: 쏠 준비가 될 때까지 방아쇠울 밖(옆면)에 둡니다.',
@@ -403,12 +440,12 @@ function drawPose(el,mode){
   const finger=one?`<line x1="208" y1="76" x2="220" y2="73" stroke="#334155" stroke-width="6.5" stroke-linecap="round"/><line x1="208" y1="76" x2="220" y2="73" stroke="${sk}" stroke-width="3.5" stroke-linecap="round"/>`:'';
   const inset=one?
    `<rect x="200" y="126" width="114" height="96" rx="8" fill="#fff" stroke="#cbd5e1"/>
-    <text x="257" y="139" font-size="9" text-anchor="middle" fill="#475569">위에서: 몸은 비스듬히</text>
-    <circle cx="260" cy="156" r="8" fill="#fff" stroke="#111" stroke-width="1.5"/><circle cx="260" cy="156" r="3.5" fill="#111"/>
-    <line x1="262" y1="180" x2="260" y2="166" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3 2"/>
-    <line x1="264" y1="198" x2="262" y2="182" stroke="#2563eb" stroke-width="5" stroke-linecap="round"/>
-    <line x1="250" y1="214" x2="264" y2="198" stroke="#64748b" stroke-width="8" stroke-linecap="round"/>
-    <circle cx="257" cy="206" r="6" fill="${sk}" stroke="#334155" stroke-width="1.5"/>`
+    <text x="257" y="139" font-size="9" text-anchor="middle" fill="#475569">위에서: 몸 90도 돌림</text>
+    <circle cx="261" cy="156" r="8" fill="#fff" stroke="#111" stroke-width="1.5"/><circle cx="261" cy="156" r="3.5" fill="#111"/>
+    <line x1="261" y1="180" x2="261" y2="166" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3 2"/>
+    <line x1="261" y1="214" x2="261" y2="198" stroke="#64748b" stroke-width="8" stroke-linecap="round"/>
+    <line x1="261" y1="198" x2="261" y2="182" stroke="#2563eb" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="261" cy="206" r="6" fill="${sk}" stroke="#334155" stroke-width="1.5"/>`
   :`<rect x="200" y="126" width="114" height="96" rx="8" fill="#fff" stroke="#cbd5e1"/>
     <text x="257" y="139" font-size="9" text-anchor="middle" fill="#475569">위에서: 두 팔 삼각형</text>
     <circle cx="257" cy="156" r="8" fill="#fff" stroke="#111" stroke-width="1.5"/><circle cx="257" cy="156" r="3.5" fill="#111"/>
@@ -442,7 +479,7 @@ function drawPose(el,mode){
   ${hand2}${finger}
   <line x1="141" y1="54" x2="264" y2="54" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 3"/>
   ${tag(150,38,7,'시선: 가늠쇠에 초점')}
-  ${tag(12,100,2,one?'몸: 비스듬히 곧게':'몸: 곧게·정면')}
+  ${tag(12,100,2,one?'몸: 90도 돌려 곧게':'몸: 곧게·정면')}
   ${one?tag(12,140,6,'반대 손: 허리')+'<line x1="96" y1="140" x2="118" y2="140" stroke="#94a3b8" stroke-dasharray="2 2"/>':tag(12,84,6,'어깨 힘 빼기')+'<line x1="84" y1="84" x2="114" y2="84" stroke="#94a3b8" stroke-dasharray="2 2"/>'}
   ${tag(160,116,3,one?'사격 팔: 곧게·어깨 높이':'두 팔: 곧게, 삼각형')}
   ${tag(214,102,4,'')}${tag(228,84,5,'')}
@@ -566,11 +603,11 @@ $('pa-chk').onclick=()=>{
 /* 오조준 판별 (기존 6시 조준 자리) */
 const MQ_OPT=[['ok','✅ 중앙 (정렬 OK)'],['up','⬆ 위쪽'],['down','⬇ 아래쪽'],['left','⬅ 왼쪽'],['right','➡ 오른쪽']];
 const MQ_EXP={
- ok:'가늠쇠가 홈 한가운데에 있고 윗면 높이도 같아서, 탄은 표적 중앙으로 가요.',
- up:'가늠쇠가 가늠자보다 높아요. 총구가 위를 향해서 탄이 표적 위쪽으로 가요.',
- down:'가늠쇠가 홈 속으로 낮게 들어가 있어요. 총구가 아래를 향해서 탄이 표적 아래쪽으로 가요.',
- left:'가늠쇠가 홈의 왼쪽에 붙어 있어요(왼쪽 빛틈이 좁음). 총구가 왼쪽을 향해서 탄이 왼쪽으로 가요.',
- right:'가늠쇠가 홈의 오른쪽에 붙어 있어요(오른쪽 빛틈이 좁음). 총구가 오른쪽을 향해서 탄이 오른쪽으로 가요.'};
+ok:'가늠쇠가 홈 한가운데에 있고 윗면 높이도 같아서, 탄은 표적 중앙으로 가요.',
+up:'가늠쇠가 가늠자보다 높아요. 총구가 위를 향해서 탄이 표적 위쪽으로 가요.',
+down:'가늠쇠가 홈 속으로 낮게 들어가 있어요. 총구가 아래를 향해서 탄이 표적 아래쪽으로 가요.',
+left:'가늠쇠가 홈의 왼쪽에 붙어 있어요(왼쪽 빛틈이 좁음). 총구가 왼쪽을 향해서 탄이 왼쪽으로 가요.',
+right:'가늠쇠가 홈의 오른쪽에 붙어 있어요(오른쪽 빛틈이 좁음). 총구가 오른쪽을 향해서 탄이 오른쪽으로 가요.'};
 let MQK='ok',mqLock=false;
 function mqNew(){
   MQK=MQ_OPT[rnd(0,4)][0];const a=rnd(14,26),j=()=>rnd(-2,2);
@@ -681,7 +718,7 @@ $('ss-start').onclick=ssStart;$('ss-stop').onclick=ssStop;$('ss-reset').onclick=
 /* --- 표적 --- */
 const SH=[];
 const U=12; /* 점수 링 1칸 = 12 */
-const hand=()=>$('sh-hand').value;
+const hand=()=>HAND;
 const shotScore=(x,y)=>{const d=Math.hypot(x-150,y-150);return d>120?0:11-Math.max(1,Math.ceil(d/12));};
 function drawTarget(){
   let s='';
@@ -696,19 +733,9 @@ function dirOf(dx,dy,t){
   const v=dy>t?'아래':dy<-t?'위':'',h=dx>t?'오른쪽':dx<-t?'왼쪽':'';
   return {v,h,name:[h,v].filter(Boolean).join(' ')||'중앙'};
 }
-function groupStats(){
-  const P=SH.filter(o=>o.x!=null);
-  const s={n:SH.length,total:SH.reduce((a,o)=>a+o.s,0),zeros:SH.filter(o=>o.s===0).length,pos:P.length};
-  if(P.length>=3){
-    const mx=P.reduce((a,o)=>a+o.x,0)/P.length-150,my=P.reduce((a,o)=>a+o.y,0)/P.length-150;
-    s.cx=+(mx/U).toFixed(2);s.cy=+(my/U).toFixed(2);
-    s.sp=+(P.reduce((a,o)=>a+Math.hypot(o.x-150-mx,o.y-150-my),0)/P.length/U).toFixed(2);
-  }
-  return s;
-}
 const ADV_V={
- '위':['가늠쇠가 가늠자 홈보다 높게 올라온 채로 쏘았을 수 있어요. (가늠쇠가 향한 쪽으로 탄이 갑니다)','쏘는 순간 손목이 위로 꺾였거나, 팔이 올라오는 도중에 쏘았을 수 있어요.','눈이 가늠쇠가 아니라 표적을 보고 있으면 가늠쇠 높이를 놓치기 쉬워요.'],
- '아래':['가늠쇠가 가늠자 홈 속으로 낮게 들어간 채로 쏘았을 수 있어요.','방아쇠를 당기는 순간 총을 아래로 "툭" 누르는 습관일 수 있어요.','팔이 지쳐서 내려오는 도중에 쏘았을 수도 있어요.']
+'위':['가늠쇠가 가늠자 홈보다 높게 올라온 채로 쏘았을 수 있어요. (가늠쇠가 향한 쪽으로 탄이 갑니다)','쏘는 순간 손목이 위로 꺾였거나, 팔이 올라오는 도중에 쏘았을 수 있어요.','눈이 가늠쇠가 아니라 표적을 보고 있으면 가늠쇠 높이를 놓치기 쉬워요.'],
+'아래':['가늠쇠가 가늠자 홈 속으로 낮게 들어간 채로 쏘았을 수 있어요.','방아쇠를 당기는 순간 총을 아래로 "툭" 누르는 습관일 수 있어요.','팔이 지쳐서 내려오는 도중에 쏘았을 수도 있어요.']
 };
 function advH(h,hd){
   const deep=hd==='R'?'왼쪽':'오른쪽';
@@ -716,32 +743,55 @@ function advH(h,hd){
     h===deep?'검지가 방아쇠에 너무 깊게 걸려 옆으로 당겼을 수 있어요. 검지 첫 마디 중앙만 대고 곧게 뒤로 당기세요.'
             :'검지가 방아쇠에 너무 얕게 걸렸거나 손바닥으로 총을 비틀어 쥐었을 수 있어요. 검지 첫 마디 중앙이 방아쇠에 닿는지 확인하세요.'];
 }
+function clockOf(sx,sy){      /* 조준점을 옮길 방향: 12시=위, 3시=오른쪽 (서버와 같은 규칙) */
+  if(Math.hypot(sx,sy)<0.3)return '';
+  let a=Math.atan2(sx,-sy)*180/Math.PI;if(a<0)a+=360;
+  return (Math.round(a/30)%12||12)+'시 방향';
+}
+function statsXY(P){          /* P: [{x,y}] 링 단위, 표적 중심 기준, 오른쪽·아래가 + */
+  const n=P.length,cx=P.reduce((a,o)=>a+o.x,0)/n,cy=P.reduce((a,o)=>a+o.y,0)/n;
+  const sp=P.reduce((a,o)=>a+Math.hypot(o.x-cx,o.y-cy),0)/n;
+  const sdx=Math.sqrt(P.reduce((a,o)=>a+(o.x-cx)**2,0)/n),sdy=Math.sqrt(P.reduce((a,o)=>a+(o.y-cy)**2,0)/n);
+  const off=Math.hypot(cx,cy);
+  return {n,cx,cy,sp,sdx,sdy,off,bias:off>=Math.max(1,2*sp/Math.sqrt(n))};  /* 서버(Code.gs)와 같은 기준 */
+}
 function analyze(){
-  const n=SH.length,hd=hand(),P=SH.filter(o=>o.x!=null);
+  const n=SH.length,hd=hand();
   const tot=SH.reduce((a,o)=>a+o.s,0);
   const Z=SH.map((o,i)=>({...o,n:i+1})).filter(o=>o.s===0);
+  const P=SH.filter(o=>o.x!=null).map(o=>({x:(o.x-150)/U,y:(o.y-150)/U}));
   const out=[],sec=(t,L)=>out.push(`<b>${t}</b>`+L.map(x=>'• '+x).join('<br>'));
-  sec('📊 한눈에 보기',[`${n}발 합계 <b style="display:inline">${tot}점</b>, 평균 ${(tot/n).toFixed(1)}점`+(Z.length?`, 0점 ${Z.length}발`:' · 0점 없음 👍')]);
-  let off=0,sp=0,d=null;
-  if(P.length>=3){
-    const mx=P.reduce((a,o)=>a+o.x,0)/P.length-150,my=P.reduce((a,o)=>a+o.y,0)/P.length-150;
-    sp=P.reduce((a,o)=>a+Math.hypot(o.x-150-mx,o.y-150-my),0)/P.length/U;
-    off=Math.hypot(mx,my)/U;d=dirOf(mx,my,U*0.6);
-    const L=[];
-    L.push(off<0.7?'탄착군 중심이 표적 중앙에 가까워요. 👍':`탄착군 중심이 <b style="display:inline">${d.name}</b>으로 약 ${off.toFixed(1)}링 치우쳤어요.`);
-    L.push(`흩어짐 평균 ${sp.toFixed(1)}링 → `+(sp<1.5?'아주 잘 모여 있어요. 자세와 방아쇠 습관이 일정하다는 뜻이에요.':sp<3?'보통이에요. 매번 같은 순서로 쏘면 더 모여요.':'넓게 흩어졌어요. 정렬·호흡·방아쇠 속도가 발마다 달랐을 가능성이 커요.'));
+  const B=t=>`<b style="display:inline">${t}</b>`;
+  sec('📊 한눈에 보기',[`${n}발 합계 ${B(tot+'점')}, 평균 ${(tot/n).toFixed(1)}점`+(Z.length?`, 0점 ${Z.length}발`:' · 0점 없음 👍')]);
+  let kind='hold',S=null,d=null;
+  if(P.length>=5){
+    S=statsXY(P);d=dirOf(S.cx,S.cy,0.6);
+    kind=S.bias?(S.sp>=3?'weak':'shift'):(S.sp>=3?'scatter':'none');
+    const aim=clockOf(-S.cx,-S.cy),rg=Math.max(0.5,Math.round(S.off*2)/2);
+    const size=S.sp<1.5?'좁음':S.sp<3?'보통':'넓음';
+    const L=['탄착군 중심: '+(S.off<0.7?'표적 중앙에 가까워요. 👍':`${B(d.name)} 쪽으로 약 ${S.off.toFixed(1)}링 치우쳤어요.`),
+      `탄착군 크기: ${B(size)} (평균 ${S.sp.toFixed(1)}링) → `+(S.sp<1.5?'아주 잘 모여 있어요. 자세와 방아쇠 습관이 일정하다는 뜻이에요.':S.sp<3?'보통이에요. 매번 같은 순서로 쏘면 더 모여요.':'넓게 흩어졌어요. 정렬·호흡·방아쇠 속도가 발마다 달랐을 수 있어요.')];
+    if(S.sdx>=1.5&&S.sdx>=S.sdy*1.5)L.push('가로(좌우)로 더 넓게 퍼졌어요. 총이 좌우로 흔들리거나 방아쇠를 옆으로 당기지 않았는지 확인해 보세요.');
+    else if(S.sdy>=1.5&&S.sdy>=S.sdx*1.5)L.push('세로(위아래)로 더 넓게 퍼졌어요. 호흡, 팔 높이, 방아쇠를 누르는 방향을 확인해 보세요.');
+    else L.push('가로와 세로 퍼짐이 비슷해요.');
     sec('🎯 탄착군 분석',L);
-    if(off>=0.7){
+    const T={
+      shift:[`${B('편차형')}: 탄이 한쪽으로 모여 있어요. 조준점을 ${B(aim)}으로 약 ${rg}링 옮기는 <b style="display:inline">조준점 보정</b>을 해 볼 수 있어요.`,'먼저 [🎯 영점 잡기]에서 3발×3회로 편차가 매번 일정한지 확인하세요. 일정할 때만 보정해요.'],
+      weak:[`치우침은 있지만 흩어짐이 커서 보정 효과가 작을 수 있어요. ${B('보정보다 자세·호흡·방아쇠 점검')}이 먼저예요. (② 자세 점검, ③ 안정성 측정)`],
+      scatter:[`${B('산포형')}: 치우침보다 흩어짐이 커요. 보정하지 말고 자세·호흡·방아쇠 습관부터 점검하세요. (② 자세 점검, ③ 안정성 측정)`],
+      none:['탄착군 중심이 중앙에 가까워서 <b style="display:inline">보정은 필요 없어요.</b> 지금 습관을 유지하세요. 👍']}[kind];
+    sec('🧭 유형 판단',T);
+    if(kind==='shift'||kind==='weak'){
       const C=[];
       if(d.v)ADV_V[d.v].forEach(x=>C.push('↕ '+x));
       if(d.h)advH(d.h,hd).forEach(x=>C.push('↔ '+x));
-      if(sp<2)C.push('🛠 한쪽으로 치우쳤지만 모여 있는 경우예요. 자세와 방아쇠는 일정하다는 좋은 신호! 문제는 "조준선 정렬 습관"일 가능성이 커요. ④ 오조준 판별로 점검하고, 쏘기 직전 가늠쇠 높이와 좌우 빛틈을 확인하세요.');
-      sec('🔍 가능한 원인 (확실하지 않으니 하나씩 확인해 보세요)',C);
-    }else if(sp>=3){
-      sec('🔍 가능한 원인',['조준선 정렬을 끝내기 전에 쏘았을 수 있어요.','호흡을 멈추지 않고 쏘았거나 팔이 흔들리는 중에 쏘았을 수 있어요. (③ 안정성 측정으로 점검)','방아쇠를 "탁" 하고 급하게 당겼을 수 있어요.']);
+      if(kind==='shift'&&S.sp<2)C.push('🛠 모여 있으면서 치우친 경우예요. 자세와 방아쇠는 일정하다는 좋은 신호예요. 쏘기 직전 가늠쇠 높이와 좌우 빛틈을 확인하세요.');
+      sec('🔍 확인해 볼 것 (원인은 확실하지 않아요. 하나씩 확인하세요)',C);
+    }else if(kind==='scatter'){
+      sec('🔍 확인해 볼 것',['조준선 정렬을 끝내기 전에 쏘지 않았나요?','숨을 멈추지 않았거나 팔이 흔들리는 중에 쏘지 않았나요? (③ 안정성 측정으로 점검)','방아쇠를 "탁" 하고 급하게 당기지 않았나요?']);
     }
   }else{
-    sec('🎯 탄착군 분석',['표적을 터치해서 <b style="display:inline">3발 이상</b> 입력하면 어느 쪽으로 치우쳤는지 분석해 드려요. (숫자 버튼 입력은 위치를 알 수 없어요)']);
+    sec('🎯 탄착군 분석',[`위치를 입력한 발이 ${P.length}발이에요. ${B('5발 이상')}을 표적에서 터치해야 치우침과 보정 여부를 판단할 수 있어요. 아직 판단하기 일러요. (숫자 버튼 입력은 위치를 알 수 없어요)`]);
   }
   if(n>=6){
     const h=Math.floor(n/2),a=SH.slice(0,h).reduce((s,o)=>s+o.s,0)/h,b=SH.slice(h).reduce((s,o)=>s+o.s,0)/(n-h);
@@ -751,20 +801,20 @@ function analyze(){
   if(Z.length){
     const ZV={'위':'가늠쇠가 가늠자보다 많이 높았거나 팔이 올라오는 도중에 쏘았을 수 있어요.','아래':'쏘는 순간 총을 아래로 눌렀거나 팔이 내려가는 도중에 쏘았을 수 있어요.'};
     const L=Z.map(z=>{
-      if(z.x==null)return `<b style="display:inline">${z.n}번째 발</b>: 위치를 입력하지 않아 방향은 알 수 없어요. (표적을 터치해 입력하면 원인을 더 정확히 찾을 수 있어요)`;
+      if(z.x==null)return `${B(z.n+'번째 발')}: 위치를 입력하지 않아 방향은 알 수 없어요. (표적을 터치해 입력하면 원인을 더 정확히 찾을 수 있어요)`;
       const dx=z.x-150,dy=z.y-150,zd=dirOf(dx,dy,Math.hypot(dx,dy)*0.38);
       const why=[];if(zd.v)why.push(ZV[zd.v]);
       if(zd.h)why.push(`가늠쇠가 홈의 ${zd.h} 쪽에 크게 붙었거나, 총이 기울었거나, 방아쇠를 옆으로 세게 당겼을 수 있어요.`);
-      return `<b style="display:inline">${z.n}번째 발</b>: 표적 <b style="display:inline">${zd.name}</b>으로 크게 벗어났어요. ${why.join(' ')}`;
+      return `${B(z.n+'번째 발')}: 표적 ${B(zd.name)}으로 크게 벗어났어요. ${why.join(' ')}`;
     });
-    L.push('<b style="display:inline">0점 점검 순서</b><br>&nbsp;① 가늠쇠가 홈 안에 들어온 것을 확인하고 쏘았나요?<br>&nbsp;② 눈의 초점이 표적이 아니라 가늠쇠에 있었나요?<br>&nbsp;③ 팔이 올라오거나 내려가는 중에 쏘지 않았나요?<br>&nbsp;④ 총이 좌우로 기울지 않았나요? (기울면 크게 빗나가요)<br>&nbsp;⑤ 방아쇠를 급하게 당기지 않았나요?');
-    L.push(Z.length>=3?'0점이 3발 이상이에요. 점수보다 <b style="display:inline">속도를 줄이는 것</b>이 가장 큰 개선 방법이에요. 가늠쇠 정렬이 확인되기 전에는 쏘지 마세요.':'0점은 "작은 습관"이 아니라 "큰 실수"에서 나와요. 0점 다음 발은 바로 쏘지 말고, 팔을 내렸다가 처음부터 다시 올려 정렬하세요.');
+    L.push(`${B('0점 점검 순서')}<br>&nbsp;① 가늠쇠가 홈 안에 들어온 것을 확인하고 쏘았나요?<br>&nbsp;② 눈의 초점이 표적이 아니라 가늠쇠에 있었나요?<br>&nbsp;③ 팔이 올라오거나 내려가는 중에 쏘지 않았나요?<br>&nbsp;④ 총이 좌우로 기울지 않았나요? (기울면 크게 빗나가요)<br>&nbsp;⑤ 방아쇠를 급하게 당기지 않았나요?`);
+    L.push(Z.length>=3?`0점이 3발 이상이에요. 점수보다 ${B('속도를 줄이는 것')}이 가장 큰 개선 방법이에요. 가늠쇠 정렬이 확인되기 전에는 쏘지 마세요.`:'0점은 "작은 습관"이 아니라 "큰 실수"에서 나와요. 0점 다음 발은 바로 쏘지 말고, 팔을 내렸다가 처음부터 다시 올려 정렬하세요.');
     sec(`⭕ 0점 분석 (${Z.length}발)`,L);
   }
   const N=['쏠 때마다 같은 순서로: ① 가늠쇠가 홈 한가운데인지 확인 → ② 숨을 반쯤 내쉬고 멈춤 → ③ 검지 첫 마디로 곧게 당김'];
   if(Z.length)N.unshift('0점이 나오면 즉시 팔을 내리고 처음부터 다시 정렬하기');
-  if(off>=0.7)N.push(`${d.name} 쪽으로 가지 않도록, 쏘기 직전 가늠쇠 ${d.v?'높이':'좌우 빛틈'}를 한 번 더 확인하기`);
-  if(sp>=3)N.push('한 발에 너무 오래 끌지 말고, 팔이 떨리기 시작하면 내렸다가 다시 올리기');
+  if(kind==='shift')N.push('🎯 영점 잡기 탭에서 편차가 일정한지 확인하고, 일정하면 조준점 보정을 적용해 쏘기');
+  if(kind==='weak'||kind==='scatter')N.push('보정하지 말고 자세 점검표를 확인하며, 한 발마다 같은 속도로 쏘기');
   sec('✅ 다음 10발에서 해볼 것',N.slice(0,3));
   return out.join('<br>');
 }
@@ -775,11 +825,10 @@ function shRender(){
   $('sh-list').innerHTML=SH.length?SH.map((o,i)=>`<span class="chip${o.s>=9?' on':''}" style="cursor:default">${i+1}발 ${o.s}</span>`).join(''):'<span class="mut">아직 입력한 발이 없어요.</span>';
   G.shots=SH.map(o=>o.s).join('-');G.shotTotal=done?tot:'';
   say('sh-sum',`합계 <b>${tot}</b>점 · 평균 <b>${SH.length?(tot/SH.length).toFixed(1):'-'}</b>점${done?` · 🏁 10발 완료: <b>${tot}/100</b>`:''}`,done?'okc':'');
-  if(SH.length<3)$('sh-ana').innerHTML='표적을 터치해서 3발 이상 입력하면 탄착군(맞은 위치) 분석과 0점 원인 분석을 해 드려요.';
+  if(SH.length<3)$('sh-ana').innerHTML='표적을 터치해서 입력하면 탄착군(맞은 위치) 분석과 0점 원인 분석을 해 드려요. 보정 여부 판단은 위치를 입력한 발이 5발 이상일 때 가능해요.';
   else{$('sh-ana').className='res ana';$('sh-ana').innerHTML=analyze();}
   if(done&&SS.run)ssStop();
 }
-$('sh-hand').onchange=()=>shRender();
 $('sh-btns').innerHTML=Array.from({length:11},(_,i)=>`<button type="button" class="chip" data-s="${i}">${i}</button>`).join('');
 $('sh-btns').onclick=e=>{const b=e.target.closest('button[data-s]');if(!b||SH.length>=10)return;SH.push({s:+b.dataset.s});shRender();};
 $('sh-svg').onclick=e=>{
@@ -791,30 +840,191 @@ $('sh-svg').onclick=e=>{
 $('sh-undo').onclick=()=>{SH.pop();shRender();};
 $('sh-reset').onclick=()=>{
   if(SH.length&&!confirm('입력한 기록을 지우고 새로 시작할까요? (스톱워치도 초기화돼요)'))return;
-  SH.length=0;ssReset();$('sh-aires').classList.add('hide');shRender();
+  SH.length=0;ssReset();coachShowSaved();shRender();
 };
 $('sh-go').onclick=()=>showTab('t-rec');
-/* --- AI 상세 코칭 (Apps Script → Gemini) --- */
+/* --- AI 상세 코칭 (하루 1번, 서버에서 제한) --- */
 let aiBusy=false;
+const coachKey=()=>'laserCoach_'+(USER?USER.sid:'');
+function coachShowSaved(){
+  const box=$('sh-aires');let c=null;
+  try{c=JSON.parse(localStorage.getItem(coachKey())||'null');}catch(e){}
+  if(c&&c.date===todayStr()&&c.text){box.className='res pre okc';box.textContent='🤖 AI 코치 (오늘 받은 코칭 · 하루 1번)\n\n'+c.text;}
+  else box.className='res pre hide';
+}
 $('sh-ai').onclick=async()=>{
+  if(!USER||aiBusy)return;
   const box=$('sh-aires');box.classList.remove('hide');
-  if(!USER)return;
-  if(SH.length<3){box.className='res pre badc';box.textContent='3발 이상 입력한 뒤 눌러 주세요.';return;}
-  if(aiBusy)return;aiBusy=true;$('sh-ai').disabled=true;
-  box.className='res pre';box.textContent='🤖 코치가 분석 중이에요… (5~15초)';
-  const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),45000);
+  if(SH.length<10){box.className='res pre badc';box.textContent='10발을 모두 입력한 뒤 눌러 주세요. (하루 1번만 받을 수 있어요)';return;}
+  const np=SH.filter(o=>o.x!=null).length;
+  if(!confirm('AI 코칭은 하루 1번만 받을 수 있어요. 지금 받을까요?'+(np<5?`\n\n⚠️ 표적을 터치해 위치를 입력한 발이 ${np}발이에요. 5발 미만이면 탄착군(조준점 보정) 분석을 못 해요.`:'')))return;
+  aiBusy=true;$('sh-ai').disabled=true;
+  box.className='res pre';box.textContent='🤖 코치가 분석 중이에요… (5~20초)';
+  const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),50000);
   try{
-    const body={action:'coach',sid:USER.sid,pin:USER.pin,hand:hand(),stats:groupStats(),
-      shots:SH.map((o,i)=>({n:i+1,s:o.s,x:o.x!=null?+((o.x-150)/U).toFixed(1):null,y:o.y!=null?+((o.y-150)/U).toFixed(1):null}))};
+    const body={action:'coach',sid:USER.sid,pin:USER.pin,hand:hand(),applied:$('sh-applied').value,
+      shots:SH.map((o,i)=>({n:i+1,s:o.s,x:o.x!=null?+((o.x-150)/U).toFixed(2):null,y:o.y!=null?+((o.y-150)/U).toFixed(2):null}))};
     const r=await fetch(getUrl(),{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body),signal:ctl.signal});
     const j=await r.json();
-    if(j.ok){box.className='res pre okc';box.textContent='🤖 AI 코치\n\n'+j.text;}
-    else{box.className='res pre badc';box.textContent=j.error==='wait'?'잠시 후(15초 뒤) 다시 눌러 주세요.':'AI 코칭을 불러오지 못했어요. 위의 기본 분석을 참고하세요.';}
-  }catch(e){box.className='res pre badc';box.textContent='네트워크 문제로 AI 코칭을 불러오지 못했어요. 위의 기본 분석을 참고하세요.';}
+    if(j.ok){
+      try{localStorage.setItem(coachKey(),JSON.stringify({date:todayStr(),text:j.text}));}catch(e){}
+      box.className='res pre okc';
+      box.textContent=(j.cached?'🤖 AI 코치 (오늘 이미 받은 코칭이에요 · 하루 1번)':'🤖 AI 코치 (오늘의 코칭 1번을 사용했어요)')+'\n\n'+j.text;
+    }else{
+      const M={need10:'10발을 모두 입력한 뒤 눌러 주세요.',wait:'다른 요청을 처리 중이에요. 1분쯤 뒤에 다시 눌러 주세요. (횟수는 차감되지 않았어요)',nokey:'AI 설정이 안 되어 있어요. 선생님께 알려 주세요.',fail:'AI가 지금 응답하지 못했어요. 횟수는 차감되지 않았어요. 잠시 뒤 다시 눌러 보세요.'};
+      box.className='res pre badc';box.textContent=(M[j.error]||'AI 코칭을 불러오지 못했어요.')+'\n위의 기본 분석을 참고하세요.';
+    }
+  }catch(e){box.className='res pre badc';box.textContent='네트워크 문제로 결과를 받지 못했어요. 서버에서는 처리됐을 수 있으니, 잠시 뒤 다시 누르면 이미 받은 코칭이 있을 때 그대로 보여 줘요.';}
   clearTimeout(tm);
   setTimeout(()=>{aiBusy=false;$('sh-ai').disabled=false;},5000);
 };
 shRender();
+/* ================= 🎯 영점 잡기 ================= */
+/* ★ 활동지 원문에 맞게 이 카드 내용을 바꿔 넣으세요 (초안) */
+const ZC=[
+{t:'① 핵심 용어',h:`<p><b>영점</b>: 총이 겨눈 곳과 탄이 맞는 곳이 일치하는 것.</p><p><b>조준점</b>: 내가 겨누는 지점.</p><p><b>탄착점·탄착군</b>: 탄이 맞은 자리와 그 모임.</p><p><b>편차</b>: 탄착군 중심이 표적 중앙에서 벗어난 방향과 거리.</p>`},
+{t:'② 오조준 vs 조준점 보정',h:`<p><b>오조준</b>: 조준선 정렬이 틀어진 <b>실수</b>예요. 정렬을 고치면 해결돼요.</p><p><b>조준점 보정</b>: 정렬은 맞는데도 탄이 <b>매번 같은 쪽</b>으로 갈 때, 겨누는 지점을 옮겨서 맞추는 방법이에요.</p><p class="mut">실수(들쭉날쭉)는 보정으로 고칠 수 없어요.</p>`},
+{t:'③ 보정 원리와 방향표',h:`<p>탄이 모이는 곳의 <b>반대쪽</b>을 겨눕니다. 옮기는 거리는 탄착군 중심이 벗어난 링 수만큼이에요. (시계: 12시=위, 3시=오른쪽, 6시=아래, 9시=왼쪽)</p>
+<table><tr><th>탄이 모이는 곳</th><th>조준점을 옮길 곳</th></tr><tr><td>위</td><td>아래 (6시)</td></tr><tr><td>아래</td><td>위 (12시)</td></tr><tr><td>왼쪽</td><td>오른쪽 (3시)</td></tr><tr><td>오른쪽</td><td>왼쪽 (9시)</td></tr><tr><td>왼쪽 위</td><td>오른쪽 아래 (4~5시)</td></tr><tr><td>오른쪽 위</td><td>왼쪽 아래 (7~8시)</td></tr><tr><td>왼쪽 아래</td><td>오른쪽 위 (1~2시)</td></tr><tr><td>오른쪽 아래</td><td>왼쪽 위 (10~11시)</td></tr></table>`},
+{t:'④ 꼭 기억할 3가지',h:`<ol style="margin:6px 0;padding-left:20px"><li>탄이 모이는 곳의 <b>반대쪽</b>을 겨눈다.</li><li>편차가 <b>일정할 때만</b> 보정한다. 들쭉날쭉하면 자세·호흡·방아쇠부터 점검한다.</li><li>이 수업의 총은 <b>영점 조절이 되지 않아</b> 조준점 보정을 쓴다.</li></ol>`}
+];
+let zcp=0;
+function zcRender(){const c=ZC[zcp];$('zc-body').innerHTML=`<b>${c.t}</b>${c.h}`;$('zc-pg').textContent=(zcp+1)+' / '+ZC.length;$('zc-prev').disabled=zcp===0;$('zc-next').disabled=zcp===ZC.length-1;}
+$('zc-prev').onclick=()=>{zcp=Math.max(0,zcp-1);zcRender();};
+$('zc-next').onclick=()=>{zcp=Math.min(ZC.length-1,zcp+1);zcRender();};
+zcRender();
+/* --- 실습 상태: 3발 × 3회 + 보정 사격 3발 (좌표는 링 단위) --- */
+const ZCOL=['#f97316','#2563eb','#16a34a'];
+let ZR;
+const zNew=()=>{ZR={id:uid(),date:todayStr(),rounds:[[],[],[]],retest:[],verdict:''};};
+zNew();
+const zCnt=()=>ZR.rounds.reduce((a,r)=>a+r.length,0);
+const zDone=()=>zCnt()===9;
+const zSum=a=>a.reduce((x,o)=>x+o.s,0);
+const zKey=()=>'laserZero_'+(USER?USER.sid:'');
+function zStore(){if(!USER)return;try{localStorage.setItem(zKey(),JSON.stringify(ZR));}catch(e){}}
+function zRestore(){
+  let d=null;try{d=JSON.parse(localStorage.getItem(zKey())||'null');}catch(e){}
+  if(d&&d.date===todayStr()&&Array.isArray(d.rounds)&&d.rounds.length===3)ZR=d;else zNew();
+  zRender();
+}
+/* 판정: 편차가 일정한가? (3회의 중심이 전체 중심에서 벗어난 정도 ≤ 회 안의 흩어짐) ★기준값은 경험칙, 수업 데이터로 조정 */
+function zJudge(){
+  const R=ZR.rounds,S=statsXY([].concat(...R));
+  const rc=R.map(r=>({x:r.reduce((a,o)=>a+o.x,0)/r.length,y:r.reduce((a,o)=>a+o.y,0)/r.length}));
+  const db=rc.reduce((a,c)=>a+Math.hypot(c.x-S.cx,c.y-S.cy),0)/3;
+  const w=R.reduce((a,r,i)=>a+r.reduce((b,o)=>b+Math.hypot(o.x-rc[i].x,o.y-rc[i].y),0),0)/9;
+  const steady=db<=Math.max(1,w);
+  const clock=clockOf(-S.cx,-S.cy),rings=Math.max(0.5,Math.round(S.off*2)/2);
+  let verdict,advice;
+  if(S.bias&&steady){verdict='shift';advice=`${clock}으로 ${rings}링 보정`;}
+  else if(S.bias||S.sp>=3){verdict='scatter';advice='편차 불일정 또는 넓게 흩어짐: 자세·호흡·격발 점검';}
+  else{verdict='ok';advice='보정 불필요';}
+  return {S,rc,db,w,steady,verdict,advice,clock,rings,dir:dirOf(S.cx,S.cy,0.6).name};
+}
+function tgtRings(){let s='';for(let k=1;k<=10;k++){const r=(11-k)*12,blk=k>=7;s+=`<circle cx="150" cy="150" r="${r}" fill="${blk?'#111':'#fff'}" stroke="${blk?'#fff':'#64748b'}" stroke-width="1"/>`;}return s;}
+function drawZ(){
+  let s=tgtRings();
+  const dot=(o,c,t)=>`<circle cx="${150+o.x*U}" cy="${150+o.y*U}" r="5" fill="${c}" stroke="#fff" stroke-width="1.5"/><text x="${150+o.x*U}" y="${150+o.y*U+3}" font-size="7" font-weight="700" text-anchor="middle" fill="#fff">${t}</text>`;
+  ZR.rounds.forEach((r,i)=>r.forEach((o,j)=>s+=dot(o,ZCOL[i],j+1)));
+  ZR.retest.forEach((o,j)=>s+=dot(o,'#9333ea',j+1));
+  if(zDone()){
+    const J=zJudge(),cx=150+J.S.cx*U,cy=150+J.S.cy*U;
+    s+=`<g stroke="#e11d48" stroke-width="2.5"><line x1="${cx-8}" y1="${cy}" x2="${cx+8}" y2="${cy}"/><line x1="${cx}" y1="${cy-8}" x2="${cx}" y2="${cy+8}"/></g>`;
+    if(J.verdict==='shift'){const ax=150-J.S.cx*U,ay=150-J.S.cy*U;
+      s+=`<circle cx="${ax}" cy="${ay}" r="7" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-dasharray="3 2"/><text x="${ax}" y="${ay-11}" font-size="9" font-weight="700" text-anchor="middle" fill="#2563eb">보정 조준점</text>`;}
+  }
+  $('z-svg').innerHTML=s;
+}
+function zOut(J){
+  const S=J.S,sz=v=>v<1.5?'좁음':v<3?'보통':'넓음';
+  const rows=ZR.rounds.map((r,i)=>{const c=J.rc[i];return `<tr><td><span class="zdot" style="background:${ZCOL[i]}"></span>${i+1}회</td><td>${dirOf(c.x,c.y,0.6).name}</td><td>${Math.hypot(c.x,c.y).toFixed(1)}링</td><td>${zSum(r)}점</td></tr>`;}).join('');
+  let h=`<p style="margin:0 0 4px"><b>② 편차 분석</b></p><table class="tb"><tr><th>회</th><th>탄착군 중심 방향</th><th>중앙에서</th><th>합계</th></tr>${rows}</table>`;
+  h+=`<p>9발 전체 중심: <b>${J.dir}</b> 쪽 ${S.off.toFixed(1)}링 · 탄착군 크기 <b>${sz(S.sp)}</b>(${S.sp.toFixed(1)}링) · 3회 중심의 흩어짐 ${J.db.toFixed(1)}링</p>`;
+  if(J.verdict==='ok')h+=`<p>✅ <b>보정이 필요 없어요.</b> 탄착군 중심이 표적 중앙 근처예요. 지금 자세를 유지하세요.</p>`;
+  else if(J.verdict==='scatter')h+=S.bias?`<p>⚠️ <b>편차가 일정하지 않아요.</b> 회마다 탄이 모이는 곳이 달라요. 보정하지 말고 ② 자세 점검, ③ 안정성, 호흡, 방아쇠를 점검한 뒤 <b>처음부터 다시</b> 해 보세요. 총을 내렸다가 들 때마다 똑같이 드는지도 확인하세요.</p>`:`<p>⚠️ 탄이 넓게 흩어져서 한쪽으로 치우쳤는지 판단하기 어려워요. 자세·호흡·방아쇠부터 점검하고 다시 해 보세요.</p>`;
+  else h+=`<p>🧭 <b>편차가 일정해요.</b></p><p><b>③ 보정 계획</b>: 탄이 <b>${J.dir}</b>으로 모였으니, 조준점을 반대쪽인 <b>${J.clock}</b>으로 약 <b>${J.rings}링</b> 옮겨 겨눕니다. (표적의 파란 점선 원이 보정 조준점이에요)</p>${S.sp>=3?'<p class="mut">탄착군이 넓어서 보정 효과가 작을 수 있어요.</p>':''}<p class="mut">이 보정값은 총·거리·내 자세가 합쳐진 값이에요. 총이나 거리가 바뀌면 다시 잡으세요.</p>`;
+  if(J.verdict==='shift'&&ZR.retest.length===3){
+    const R=statsXY(ZR.retest),a1=zSum([].concat(...ZR.rounds))/9,a2=zSum(ZR.retest)/3;
+    const arrow=(b,a,lowGood)=>{const d=a-b;if(Math.abs(d)<0.05)return '→';return (lowGood?d<0:d>0)?'<span class="up">▲</span>':'<span class="dn">▼</span>';};
+    h+=`<p style="margin:8px 0 4px"><b>⑤ 결과 비교</b></p><table class="tb"><tr><th></th><th>영점 사격(9발)</th><th>보정 사격(3발)</th><th></th></tr>
+<tr><td>평균 점수/발</td><td>${a1.toFixed(1)}</td><td>${a2.toFixed(1)}</td><td>${arrow(a1,a2,false)}</td></tr>
+<tr><td>중앙에서 중심까지</td><td>${S.off.toFixed(1)}링</td><td>${R.off.toFixed(1)}링</td><td>${arrow(S.off,R.off,true)}</td></tr>
+<tr><td>탄착군 크기</td><td>${sz(S.sp)} (${S.sp.toFixed(1)})</td><td>${sz(R.sp)} (${R.sp.toFixed(1)})</td><td>${arrow(S.sp,R.sp,true)}</td></tr></table>`;
+    h+=(R.off<=S.off-0.5||a2>=a1+0.5)?`<p>✅ 보정 후 중심이 중앙에 가까워졌거나 점수가 올랐어요. 조준점 보정이 효과가 있었어요.</p>`:`<p>보정 효과가 뚜렷하지 않아요. 3발은 우연의 영향이 커요. 한 번 더 쏴 보거나, 편차가 정말 일정했는지 다시 확인해 보세요.</p>`;
+    h+=`<p class="mut">보정 사격은 3발이라 탄착군 크기는 참고만 하세요. 점수 합계가 아니라 <b>발당 평균</b>으로 비교했어요.</p>`;
+  }
+  return h;
+}
+function zRender(){
+  drawZ();
+  const done=zDone(),J=done?zJudge():null;
+  ZR.verdict=J?J.verdict:'';
+  let step;
+  if(!done){
+    const r=ZR.rounds.findIndex(a=>a.length<3),k=ZR.rounds[r].length;
+    step=`<b>① 시사</b>: <b>${r+1}회</b> ${k}/3발 · 표적에서 맞은 위치를 터치하세요.`+(r>0&&k===0?'<br>✋ 총을 완전히 내렸다가 다시 들어 올려 쏘세요. (매번 똑같이 드는지 확인하는 거예요)':'');
+    $('z-out').innerHTML='<span class="mut">9발(3발×3회)을 모두 쏘면 편차를 분석해 드려요.</span>';
+  }else{
+    step=J.verdict==='shift'?(ZR.retest.length<3?`<b>④ 보정 사격</b>: 조준점을 <b>${J.clock}</b>으로 약 <b>${J.rings}링</b> 옮겨 겨누고 쏘세요. (${ZR.retest.length}/3발, 맞은 위치를 터치)`:'<b>⑤ 결과 비교</b>를 확인하세요.'):'결과를 확인하세요. 다시 하려면 [처음부터 다시]를 누르세요.';
+    $('z-out').innerHTML=zOut(J);
+  }
+  say('z-step',step);
+}
+async function zPost(){
+  if(!USER||!zDone())return;
+  const J=zJudge(),st=a=>a.map(o=>({x:o.x,y:o.y,s:o.s})),box=$('z-save');
+  const body={action:'zeroSave',sid:USER.sid,pin:USER.pin,id:ZR.id,date:ZR.date,
+    zero:{rounds:ZR.rounds.map(st),cx:+J.S.cx.toFixed(2),cy:+J.S.cy.toFixed(2),verdict:J.verdict,advice:J.advice,retest:st(ZR.retest)}};
+  $('z-resend').classList.add('hide');
+  try{
+    const r=await fetch(getUrl(),{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}),j=await r.json();
+    if(!j.ok)throw new Error(j.error||'오류');
+    box.className='res okc';box.textContent='☁️ 영점 기록을 저장했어요.';
+  }catch(e){box.className='res badc';box.textContent='⚠️ 영점 기록 저장에 실패했어요. [저장 다시 시도]를 눌러 주세요.';$('z-resend').classList.remove('hide');}
+}
+function zAfter(){
+  zRender();zStore();
+  if(zDone()&&(ZR.retest.length===0||ZR.retest.length===3))zPost();
+}
+$('z-svg').onclick=e=>{
+  const b=$('z-svg').getBoundingClientRect();
+  const px=(e.clientX-b.left)*300/b.width,py=(e.clientY-b.top)*300/b.height;
+  const o={x:+((px-150)/U).toFixed(2),y:+((py-150)/U).toFixed(2),s:shotScore(px,py)};
+  if(!zDone())ZR.rounds[ZR.rounds.findIndex(a=>a.length<3)].push(o);
+  else if(ZR.verdict==='shift'&&ZR.retest.length<3)ZR.retest.push(o);
+  else return;
+  zAfter();
+};
+$('z-undo').onclick=()=>{
+  if(ZR.retest.length)ZR.retest.pop();
+  else for(let i=2;i>=0;i--)if(ZR.rounds[i].length){ZR.rounds[i].pop();break;}
+  zRender();zStore();if(zDone())zPost();
+};
+$('z-reset').onclick=()=>{
+  if(zCnt()&&!confirm('영점 기록을 지우고 처음부터 다시 할까요?'))return;
+  zNew();zRender();zStore();$('z-save').className='res hide';$('z-resend').classList.add('hide');
+};
+$('z-resend').onclick=zPost;
+function shHint(){
+  let t;
+  if(zDone()){const J=zJudge();t=J.verdict==='shift'?`오늘 영점 결과: 조준점을 ${J.clock}으로 약 ${J.rings}링 보정. 보정을 적용하고 쏘면 위의 "영점 보정"을 "적용"으로 바꾸세요.`:`오늘 영점 결과: ${J.advice}`;}
+  else t='오늘 🎯 영점 잡기를 아직 끝내지 않았어요. 본 사격 전에 하면 좋아요.';
+  $('sh-zhint').textContent=t;
+}
+/* 생각해 보기 ★ 활동지의 4문항으로 바꿔 넣으세요 (초안) */
+const ZQ=[
+{q:'탄이 모두 표적 왼쪽 위에 모였어요. 조준점은 어디로 옮길까요?',o:['왼쪽 위','오른쪽 아래','오른쪽 위'],a:1,e:'탄이 모이는 곳의 반대쪽을 겨눠요.'},
+{q:'3회의 탄착군 중심이 회마다 서로 다른 방향이에요. 어떻게 할까요?',o:['평균 방향으로 보정한다','보정하지 않고 자세·호흡·방아쇠부터 점검한다','총을 바꿔 달라고 한다'],a:1,e:'편차가 일정할 때만 보정할 수 있어요.'},
+{q:'이 수업의 총에서 탄이 한쪽으로 모일 때 쓰는 방법은?',o:['영점 조절 나사 돌리기','조준점 보정','표적 위치 옮기기'],a:1,e:'이 수업의 총은 영점 조절이 안 돼서 조준점 보정을 써요.'},
+{q:'보정값을 잡은 뒤 총이나 사격 거리가 바뀌면?',o:['그대로 쓴다','영점을 다시 잡는다','보정을 두 배로 한다'],a:1,e:'보정값은 총·거리·내 자세가 합쳐진 값이에요.'}];
+$('zq').innerHTML=ZQ.map((q,i)=>`<div class="qq"><b>${i+1}. ${q.q}</b>${q.o.map((t,j)=>`<button type="button" data-q="${i}" data-o="${j}">${esc(t)}</button>`).join('')}</div>`).join('');
+$('zq').onclick=e=>{
+  const b=e.target.closest('button[data-q]');if(!b||b.disabled)return;const q=ZQ[+b.dataset.q];
+  if(+b.dataset.o===q.a){b.classList.add('okc');const p=b.parentNode;p.querySelectorAll('button').forEach(x=>x.disabled=true);p.insertAdjacentHTML('beforeend',`<div class="mut">✅ ${q.e}</div>`);}
+  else{b.classList.add('badc');b.disabled=true;}
+};
+zRender();
 /* ================= ⑧ 기록 저장 ================= */
 const HK='laserHist';
 const loadH=()=>{try{return JSON.parse(localStorage.getItem(HK)||'[]');}catch(e){return[];}};
@@ -966,9 +1176,27 @@ $('gr-chips').onclick=e=>{
   if(GROW)growRender();
 };
 $('gr-reload').onclick=()=>growLoad(true);
-/* ================= 로그인 / 비밀번호 ================= */
+/* ================= 사격 손 (처음 한 번 선택, 기기에 기억) ================= */
 let USER=null;
 try{USER=JSON.parse(sessionStorage.getItem('user')||'null');}catch(e){}
+const handKey=()=>'laserHand_'+(USER?USER.sid:'');
+function setHand(h,save){
+  HAND=h;
+  if(save&&USER){try{localStorage.setItem(handKey(),h);}catch(e){}}
+  const t=h==='L'?'왼손':'오른손';
+  $('hand-btn').textContent='✋ '+t;$('sh-handtxt').textContent=t;
+  $('handask').classList.add('hide');
+  shRender();   /* 분석 문구가 사격 손에 따라 달라지므로 다시 그림 */
+}
+function loadHand(){
+  let h=null;try{h=localStorage.getItem(handKey());}catch(e){}
+  if(h==='L'||h==='R')setHand(h,false);
+  else{setHand('R',false);$('handask').classList.remove('hide');}
+}
+$('hand-R').onclick=()=>setHand('R',true);
+$('hand-L').onclick=()=>setHand('L',true);
+$('hand-btn').onclick=()=>$('handask').classList.remove('hide');
+/* ================= 로그인 / 비밀번호 ================= */
 let lmode='login',lbusy=false;
 const SID_RE=/^[1-6](0[1-9]|[1-9]\d)(0[1-9]|[1-9]\d)$/;
 const lmsg=(t,c)=>say('lg-msg',t,c);
@@ -983,9 +1211,16 @@ function lgMode(m){
 function applyUser(){
   $('login').classList.toggle('hide',!!USER);
   $('logout').classList.toggle('hide',!USER);
+  $('hand-btn').classList.toggle('hide',!USER);
   $('who').textContent=USER?`${USER.sid} ${USER.name}`:'';
   $('rec-sid').readOnly=$('rec-name').readOnly=true;
-  if(USER){$('rec-sid').value=USER.sid;$('rec-name').value=USER.name;renderHist();}
+  if(USER){
+    $('rec-sid').value=USER.sid;$('rec-name').value=USER.name;renderHist();
+    loadHand();          /* 저장된 손 불러오기, 없으면 선택 창 */
+    zRestore();          /* 오늘 하던 영점 잡기 복원 */
+    coachShowSaved();    /* 오늘 받은 AI 코칭 복원 */
+    shHint();
+  }
 }
 async function lgGo(){
   if(lbusy)return;
