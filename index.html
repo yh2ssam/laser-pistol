@@ -318,6 +318,13 @@ select.tin{background:#fff}
 </div>
 </section>
 </main>
+<!-- 오류 안전장치: 아래 메인 스크립트가 멈추면 로그인 화면에 원인을 보여 줌 (별도 script 태그 유지) -->
+<script>
+window.addEventListener('error',function(e){
+  var m=document.getElementById('lg-msg');
+  if(m){m.className='res badc';m.textContent='⚠️ 화면 오류: '+e.message+' (줄 '+e.lineno+')';}
+});
+</script>
 <script>
 /* ================= 공통 ================= */
 const $=id=>document.getElementById(id);
@@ -882,12 +889,15 @@ $('sh-ai').onclick=async()=>{
       box.textContent=(j.cached?'🤖 AI 코치 (오늘 이미 받은 코칭이에요 · 하루 1번)':'🤖 AI 코치 (오늘의 코칭 1번을 사용했어요)')+'\n\n'+j.text;
     }else{
       const M={need10:'10발을 모두 입력한 뒤 눌러 주세요.',wait:'다른 요청을 처리 중이에요. 1분쯤 뒤에 다시 눌러 주세요. (횟수는 차감되지 않았어요)',nokey:'AI 설정이 안 되어 있어요. 선생님께 알려 주세요.',fail:'AI가 지금 응답하지 못했어요. 횟수는 차감되지 않았어요. 잠시 뒤 다시 눌러 보세요.'};
-      box.className='res pre badc';box.textContent=(M[j.error]||('      box.className='res pre badc';
+      box.className='res pre badc';
       box.textContent=(M[j.error]||('AI 코칭을 불러오지 못했어요. (사유: '+(j.error||'알 수 없음')+')'))
         +(j.detail?'\n\n[상세 오류] '+j.detail:'')
         +'\n\n위의 기본 분석을 참고하세요.';
     }
-    }catch(e){box.className='res pre badc';box.textContent='네트워크 문제로 결과를 받지 못했어요. 서버에서는 처리됐을 수 있으니, 잠시 뒤 다시 누르면 이미 받은 코칭이 있을 때 그대로 보여 줘요.\n\n[상세 오류] '+(e&&e.name==='AbortError'?'50초 안에 응답이 오지 않았어요':String(e&&e.message||e));}
+  }catch(e){
+    box.className='res pre badc';
+    box.textContent='네트워크 문제로 결과를 받지 못했어요. 서버에서는 처리됐을 수 있으니, 잠시 뒤 다시 누르면 이미 받은 코칭이 있을 때 그대로 보여 줘요.\n\n[상세 오류] '+(e&&e.name==='AbortError'?'50초 안에 응답이 오지 않았어요':String(e&&e.message||e));
+  }
   clearTimeout(tm);
   setTimeout(()=>{aiBusy=false;$('sh-ai').disabled=false;},5000);
 };
