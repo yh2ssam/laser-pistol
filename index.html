@@ -282,9 +282,9 @@ select.tin{background:#fff}
    <input id="rec-name" class="tin" style="width:110px" readonly placeholder="이름">
    <select id="rec-lesson" class="tin"></select>
   </div>
-  <label class="mut">오늘의 기록 (스톱워치·게임을 하면 자동 입력, 직접 입력도 가능)</label>
+  <label class="mut">오늘의 기록 (스톱워치 자동 입력)</label>
   <input id="rec-time" class="tin wide" placeholder="00:00.00" maxlength="8" inputmode="decimal">
-  <label class="mut">❤️ 사격 중 심박수 (선택 · 운동 요약에서 최저, 최고 심박수를 확인해 쓰세요)</label>
+  <label class="mut">❤️ 사격 중 심박수 (운동 요약에서 최저, 최고 심박수를 확인해 쓰세요)</label>
   <div class="hr-row">
    <input id="rec-hr-min" class="tin" placeholder="최저 심박수 (bpm)" maxlength="3" inputmode="numeric" autocomplete="off">
    <input id="rec-hr-max" class="tin" placeholder="최고 심박수 (bpm)" maxlength="3" inputmode="numeric" autocomplete="off">
@@ -321,7 +321,7 @@ select.tin{background:#fff}
 <script>
 /* ================= 공통 ================= */
 const $=id=>document.getElementById(id);
-const SHEET_DEFAULT_URL='https://script.google.com/macros/s/AKfycbzWIp6S43Jq_QVVdVLaCD5WdCsfxZVUtOvudzVKbGk6WUEwmn4ym3WDvf1SW0kpx2kjPg/exec';
+const SHEET_DEFAULT_URL='https://script.google.com/macros/s/AKfycbyUSxEJXwu-UmG5hmwtSQp2rOXeCR8IAuVIOxsCrVWBwzIduzRyTYitXGSQA7aXAabwyQ/exec';
 const getUrl=()=>SHEET_DEFAULT_URL.trim();
 const p2=n=>String(n).padStart(2,'0');
 const todayStr=()=>{const d=new Date();return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());};
