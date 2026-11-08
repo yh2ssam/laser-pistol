@@ -164,6 +164,25 @@ main>.tab>.card{margin-bottom:0}
 #z-svg{width:min(100%,max(300px,calc(100vh - 260px)))}
 textarea.ex{min-height:170px}
 }
+/* ===== ① 자료 보기 (안전수칙 그림 · 수업자료 슬라이드) ===== */
+.lcol{margin-bottom:12px}
+.lcol>.card:last-child{margin-bottom:0}
+.vh{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.vh .chip{font-size:13px;min-height:0;padding:6px 12px}
+.thumb{display:block;position:relative;width:100%;padding:0;border:1px solid #cbd5e1;border-radius:10px;overflow:hidden;background:#f8fafc;cursor:pointer;font-family:inherit}
+.thumb img{width:100%;height:auto;display:block;min-height:120px}
+.thumb .tag{position:absolute;left:10px;bottom:10px;background:#0f172ae6;color:#fff;border-radius:999px;padding:7px 16px;font-size:14px}
+#viewer{position:fixed;inset:0;z-index:300;background:#000;display:flex;flex-direction:column}
+.vbar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;background:#0f172a;color:#fff}
+.vbar b{font-size:16px}
+.vbar span{display:flex;align-items:center;gap:12px}
+.vbar a{color:#93c5fd;font-size:14px;text-decoration:none}
+#v-x{background:#dc2626;color:#fff;border:0;border-radius:8px;padding:8px 16px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
+.vbody{flex:1;min-height:0;overflow:auto;display:flex;align-items:center;justify-content:center}
+.vbody img{max-width:100%;max-height:100%;object-fit:contain}
+.vbody iframe{width:100%;height:100%;border:0;background:#fff}
+@media (min-width:700px){.lcol{margin-bottom:16px}}
+@media (min-width:900px){.lcol{margin-bottom:0}.lcol>.card:first-child{margin-bottom:18px}}
 </style>
 </head>
 <body>
@@ -208,12 +227,18 @@ textarea.ex{min-height:170px}
 <main>
 <!-- ① 안전·개념 -->
 <section class="tab" id="t-safe">
-<div class="card"><h2>⚠️ 안전수칙</h2>
-  <div class="warn"><b>1.</b> 총구는 항상 안전한 방향(표적 쪽)을 향합니다. 사람에게 절대 겨누지 않습니다.</div>
-  <div class="warn"><b>2.</b> 쏠 준비가 될 때까지 검지는 방아쇠울 밖(옆면)에 둡니다.</div>
-  <div class="warn"><b>3.</b> 선생님의 "사격 시작" 신호 후에만 조준하고, "사격 중지"에서는 즉시 멈춥니다.</div>
-  <div class="warn"><b>4.</b> 사대에서는 뛰거나 장난치지 않고, 총을 든 채 뒤돌지 않습니다.</div>
-  <div class="warn"><b>5.</b> 사용 후에는 선생님의 확인을 받고 내려놓습니다.</div>
+<div class="lcol">
+<div class="card"><h2 class="vh"><span>⚠️ 안전수칙</span><button class="chip" type="button" data-view="safety">⛶ 크게 보기</button></h2>
+  <button class="thumb" type="button" data-view="safety" aria-label="안전수칙 크게 보기">
+    <img src="https://drive.google.com/thumbnail?id=1LpoS-rFdMfX5892qhDmXUUeICw0aLmIB&sz=w1200" alt="안전수칙">
+  </button>
+</div>
+<div class="card"><h2 class="vh"><span>📚 레이저런 수업자료</span><button class="chip" type="button" data-view="slides">⛶ 크게 보기</button></h2>
+  <button class="thumb" type="button" data-view="slides" aria-label="레이저런 수업자료 열기">
+    <img src="https://drive.google.com/thumbnail?id=1igQXVRM12jKtKbf0wCERMDNLAJQtlJfe&sz=w1200" alt="레이저런 수업자료">
+    <span class="tag">▶ 눌러서 수업자료 보기</span>
+  </button>
+</div>
 </div>
 <div class="card"><h2>🔎 핵심 용어</h2>
   <p><b>가늠자</b>: 눈 가까이(총 뒤쪽)에 있는 홈. <b>가늠쇠</b>: 총구 쪽 끝의 작은 돌기. 눈의 초점은 <b>가늠쇠</b>에 맞추고, 가늠자와 표적은 흐릿하게 보이는 것이 정상입니다.</p>
@@ -1444,6 +1469,52 @@ lgMode('login');applyUser();restoreDraft();
   function sync(){need()?get():drop();}
   setInterval(sync,500);                     /* 스톱워치 상태를 0.5초마다 확인 */
   document.addEventListener('visibilitychange',sync);   /* 다른 앱에 갔다 돌아오면 다시 잡음 */
+})();
+</script>
+<script>
+/* ① 자료 전체화면 보기: 그림/슬라이드를 크게 보고 ✕ 로 웹앱에 복귀 */
+(function(){
+  var SAFETY_ID='1LpoS-rFdMfX5892qhDmXUUeICw0aLmIB';
+  var SLIDES_EMBED='https://docs.google.com/presentation/d/e/2PACX-1vR0feFNeOavsA-aQiFBG1snRRSED-gywhbJzrza7atnYRbjCViMmiC1tp3eUpAYz2948hNbIFKoaxIo/embed?start=false&loop=false&delayms=3000';
+  var SLIDES_PUB='https://docs.google.com/presentation/d/e/2PACX-1vR0feFNeOavsA-aQiFBG1snRRSED-gywhbJzrza7atnYRbjCViMmiC1tp3eUpAYz2948hNbIFKoaxIo/pub?start=false&loop=false&delayms=3000';
+  var ov=document.createElement('div');
+  ov.id='viewer';ov.className='hide';
+  ov.innerHTML='<div class="vbar"><b id="v-title"></b><span><a id="v-ext" target="_blank" rel="noopener">↗ 새 탭에서 열기</a><button id="v-x" type="button">✕ 닫기</button></span></div><div class="vbody" id="v-body"></div>';
+  document.body.appendChild(ov);
+  var body=ov.querySelector('#v-body'),title=ov.querySelector('#v-title'),ext=ov.querySelector('#v-ext');
+  var isOpen=false,fsOn=false;
+  function open(kind){
+    if(kind==='safety'){
+      title.textContent='⚠️ 안전수칙';
+      ext.href='https://drive.google.com/file/d/'+SAFETY_ID+'/view';
+      body.innerHTML='<img alt="안전수칙" src="https://drive.google.com/thumbnail?id='+SAFETY_ID+'&sz=w2400">';
+    }else{
+      title.textContent='📚 레이저런 수업자료';
+      ext.href=SLIDES_PUB;
+      body.innerHTML='<iframe src="'+SLIDES_EMBED+'" allowfullscreen="true" allow="fullscreen"></iframe>';
+    }
+    ov.classList.remove('hide');isOpen=true;
+    document.body.style.overflow='hidden';
+    try{
+      var r=(ov.requestFullscreen||ov.webkitRequestFullscreen);
+      if(r){var p=r.call(ov);if(p&&p.then)p.then(function(){fsOn=true;}).catch(function(){});else fsOn=true;}
+    }catch(e){}
+  }
+  function close(){
+    if(!isOpen)return;
+    isOpen=false;fsOn=false;
+    ov.classList.add('hide');body.innerHTML='';       /* 슬라이드 재생도 함께 멈춤 */
+    document.body.style.overflow='';
+    try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen();}catch(e){}
+  }
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('[data-view]');
+    if(b){open(b.getAttribute('data-view'));}
+  });
+  ov.querySelector('#v-x').onclick=close;
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+  /* 제스처·ESC로 전체화면을 빠져나오면 웹앱으로 함께 복귀 */
+  document.addEventListener('fullscreenchange',function(){if(!document.fullscreenElement&&fsOn)close();});
 })();
 </script>
 </body>
