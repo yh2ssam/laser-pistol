@@ -82,7 +82,6 @@ select.tin{background:#fff}
 .zc td,.zc th{border:1px solid #e2e8f0;padding:4px 6px;text-align:center}
 .zc th{background:#f1f5f9}
 .zdot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}
-
 /* =====================================================================
    태블릿 최적화 (갤럭시 탭 S7 FE · 가로 스탠드 사용 기준)
    - 폭 700px 미만(휴대폰)은 위의 기본 스타일 그대로입니다.
@@ -94,78 +93,76 @@ html,body{overscroll-behavior-y:contain}              /* 당겨서 새로고침 
 body{-webkit-tap-highlight-color:transparent}
 button,svg,nav{-webkit-user-select:none;user-select:none}
 .split>.pl,.split>.pr{min-width:0}
-
 @media (min-width:700px){
- :root{--stk:72px}
- body{font-size:17px}
- header{padding:10px 20px}
- h1{font-size:19px}
- nav{gap:6px;padding:8px 12px;scrollbar-width:none}
- nav::-webkit-scrollbar{display:none}
- nav .chip{flex:1 0 auto;min-height:46px;font-size:14px;padding:6px 10px}
- main{max-width:780px;padding:16px 20px 32px}
- .card{padding:18px 20px;border-radius:14px;margin-bottom:16px}
- .card h2{font-size:20px;margin-bottom:10px}
- .chip{font-size:15px;min-height:44px;padding:8px 16px}
- .btn{font-size:17px;min-height:50px;padding:10px 20px}
- .btn.big{font-size:19px;min-height:56px}
- .tin{font-size:17px;padding:12px}
- .row{gap:10px}
- .res{font-size:16px;padding:10px 14px}
- .mut{font-size:14.5px}
- .warn{padding:10px 14px}
- .pc{padding:12px 0;gap:12px}
- .pc input{width:28px;height:28px}
- .qq button{font-size:17px;padding:13px 14px;margin:6px 0}
- .big-t{font-size:44px}
- .sg{gap:8px}
- .sg .chip{min-height:54px;font-size:19px}
- .sc{font-size:15px;padding:10px}
- .tb{font-size:14px}
- .tb th,.tb td{padding:6px}
- .pdesc{font-size:15.5px}
- .zc table{font-size:15px}
- .mc b{font-size:14px}
- .mc p{font-size:13.5px}
- textarea.ex::placeholder{font-size:14px}
- .lg-box{max-width:480px}
- #z-svg,#sh-svg{max-width:540px!important}
- .split>.pl{margin-bottom:10px}
- /* 슬라이더: 손가락으로 잡기 쉬운 큰 손잡이 */
- input[type=range]{-webkit-appearance:none;appearance:none;height:46px;background:transparent;margin:2px 0}
- input[type=range]::-webkit-slider-runnable-track{height:10px;background:#cbd5e1;border-radius:5px}
- input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:38px;height:38px;border-radius:50%;background:#2563eb;border:3px solid #fff;box-shadow:0 1px 5px #0007;margin-top:-14px}
- input[type=range]::-moz-range-track{height:10px;background:#cbd5e1;border-radius:5px}
- input[type=range]::-moz-range-thumb{width:34px;height:34px;border-radius:50%;background:#2563eb;border:3px solid #fff;box-shadow:0 1px 5px #0007}
+:root{--stk:72px}
+body{font-size:17px}
+header{padding:10px 20px}
+h1{font-size:19px}
+nav{gap:6px;padding:8px 12px;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav .chip{flex:1 0 auto;min-height:46px;font-size:14px;padding:6px 10px}
+main{max-width:780px;padding:16px 20px 32px}
+.card{padding:18px 20px;border-radius:14px;margin-bottom:16px}
+.card h2{font-size:20px;margin-bottom:10px}
+.chip{font-size:15px;min-height:44px;padding:8px 16px}
+.btn{font-size:17px;min-height:50px;padding:10px 20px}
+.btn.big{font-size:19px;min-height:56px}
+.tin{font-size:17px;padding:12px}
+.row{gap:10px}
+.res{font-size:16px;padding:10px 14px}
+.mut{font-size:14.5px}
+.warn{padding:10px 14px}
+.pc{padding:12px 0;gap:12px}
+.pc input{width:28px;height:28px}
+.qq button{font-size:17px;padding:13px 14px;margin:6px 0}
+.big-t{font-size:44px}
+.sg{gap:8px}
+.sg .chip{min-height:54px;font-size:19px}
+.sc{font-size:15px;padding:10px}
+.tb{font-size:14px}
+.tb th,.tb td{padding:6px}
+.pdesc{font-size:15.5px}
+.zc table{font-size:15px}
+.mc b{font-size:14px}
+.mc p{font-size:13.5px}
+textarea.ex::placeholder{font-size:14px}
+.lg-box{max-width:480px}
+#z-svg,#sh-svg{max-width:540px!important}
+.split>.pl{margin-bottom:10px}
+/* 슬라이더: 손가락으로 잡기 쉬운 큰 손잡이 */
+input[type=range]{-webkit-appearance:none;appearance:none;height:46px;background:transparent;margin:2px 0}
+input[type=range]::-webkit-slider-runnable-track{height:10px;background:#cbd5e1;border-radius:5px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:38px;height:38px;border-radius:50%;background:#2563eb;border:3px solid #fff;box-shadow:0 1px 5px #0007;margin-top:-14px}
+input[type=range]::-moz-range-track{height:10px;background:#cbd5e1;border-radius:5px}
+input[type=range]::-moz-range-thumb{width:34px;height:34px;border-radius:50%;background:#2563eb;border:3px solid #fff;box-shadow:0 1px 5px #0007}
 }
-
 @media (min-width:900px){
- :root{--stk:70px}
- main{max-width:1240px;padding:16px 24px 32px}
- main>.tab{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
- main>.tab>.card{margin-bottom:0}
- /* ① */
- #t-safe>.card:nth-child(3){grid-column:1/-1}
- #t-safe .mgrid{grid-template-columns:repeat(3,1fr)}
- /* ② 영상은 스크롤해도 따라옴 */
- #t-pose>.card:first-child{position:sticky;top:var(--stk)}
- /* 한 장짜리 탭은 전체 폭 */
- #t-stab>.card,#t-game>.card,#t-quiz>.card,#t-shot>.card,#t-aim>.card,#t-rec>.card:first-child{grid-column:1/-1}
- #t-stab>.card{max-width:880px;justify-self:center;width:100%}
- #qz{display:grid;grid-template-columns:1fr 1fr;column-gap:28px}
- /* 영점 잡기: 왼쪽 개념·생각해 보기 / 오른쪽 실습 */
- #t-zero{grid-template-rows:auto 1fr}
- #t-zero>.card:nth-child(1){grid-column:1;grid-row:1}
- #t-zero>.card:nth-child(2){grid-column:2;grid-row:1/span 2}
- #t-zero>.card:nth-child(3){grid-column:1;grid-row:2}
- /* 좌우 분할 */
- .split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:24px;align-items:start}
- .split>.pl{position:sticky;top:var(--stk);margin-bottom:0}
- .split.ns>.pl{position:static}
- /* 표적은 화면 높이에 맞춰 한 화면에 다 보이게 */
- #sh-svg{width:min(100%,max(300px,calc(100vh - 280px)))}
- #z-svg{width:min(100%,max(300px,calc(100vh - 260px)))}
- textarea.ex{min-height:170px}
+:root{--stk:70px}
+main{max-width:1240px;padding:16px 24px 32px}
+main>.tab{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+main>.tab>.card{margin-bottom:0}
+/* ① */
+#t-safe>.card:nth-child(3){grid-column:1/-1}
+#t-safe .mgrid{grid-template-columns:repeat(3,1fr)}
+/* ② 영상은 스크롤해도 따라옴 */
+#t-pose>.card:first-child{position:sticky;top:var(--stk)}
+/* 한 장짜리 탭은 전체 폭 */
+#t-stab>.card,#t-game>.card,#t-quiz>.card,#t-shot>.card,#t-aim>.card,#t-rec>.card:first-child{grid-column:1/-1}
+#t-stab>.card{max-width:880px;justify-self:center;width:100%}
+#qz{display:grid;grid-template-columns:1fr 1fr;column-gap:28px}
+/* 영점 잡기: 왼쪽 개념·생각해 보기 / 오른쪽 실습 */
+#t-zero{grid-template-rows:auto 1fr}
+#t-zero>.card:nth-child(1){grid-column:1;grid-row:1}
+#t-zero>.card:nth-child(2){grid-column:2;grid-row:1/span 2}
+#t-zero>.card:nth-child(3){grid-column:1;grid-row:2}
+/* 좌우 분할 */
+.split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:24px;align-items:start}
+.split>.pl{position:sticky;top:var(--stk);margin-bottom:0}
+.split.ns>.pl{position:static}
+/* 표적은 화면 높이에 맞춰 한 화면에 다 보이게 */
+#sh-svg{width:min(100%,max(300px,calc(100vh - 280px)))}
+#z-svg{width:min(100%,max(300px,calc(100vh - 260px)))}
+textarea.ex{min-height:170px}
 }
 </style>
 </head>
@@ -1009,7 +1006,9 @@ const ZC=[
 {t:'② 오조준 vs 조준점 보정',h:`<p><b>오조준</b>: 조준선 정렬이 틀어진 <b>실수</b>예요. 정렬을 고치면 해결돼요.</p><p><b>조준점 보정</b>: 정렬은 맞는데도 탄이 <b>매번 같은 쪽</b>으로 갈 때, 겨누는 지점을 옮겨서 맞추는 방법이에요.</p><p class="mut">실수(들쭉날쭉)는 보정으로 고칠 수 없어요.</p>`},
 {t:'③ 보정 원리와 방향표',h:`<p>탄이 모이는 곳의 <b>반대쪽</b>을 겨눕니다. 옮기는 거리는 탄착군 중심이 벗어난 링 수만큼이에요. (시계: 12시=위, 3시=오른쪽, 6시=아래, 9시=왼쪽)</p>
 <table><tr><th>탄이 모이는 곳</th><th>조준점을 옮길 곳</th></tr><tr><td>위</td><td>아래 (6시)</td></tr><tr><td>아래</td><td>위 (12시)</td></tr><tr><td>왼쪽</td><td>오른쪽 (3시)</td></tr><tr><td>오른쪽</td><td>왼쪽 (9시)</td></tr><tr><td>왼쪽 위</td><td>오른쪽 아래 (4~5시)</td></tr><tr><td>오른쪽 위</td><td>왼쪽 아래 (7~8시)</td></tr><tr><td>왼쪽 아래</td><td>오른쪽 위 (1~2시)</td></tr><tr><td>오른쪽 아래</td><td>왼쪽 위 (10~11시)</td></tr></table>`},
-{t:'④ 꼭 기억할 3가지',h:`<ol style="margin:6px 0;padding-left:20px"><li>탄이 모이는 곳의 <b>반대쪽</b>을 겨눈다.</li><li>편차가 <b>일정할 때만</b> 보정한다. 들쭉날쭉하면 자세·호흡·방아쇠부터 점검한다.</li><li>이 수업의 총은 <b>영점 조절이 되지 않아</b> 조준점 보정을 쓴다.</li></ol>`}
+{t:'④ 꼭 기억할 3가지',h:`<ol style="margin:6px 0;padding-left:20px"><li>탄이 모이는 곳의 <b>반대쪽</b>을 겨눈다.</li><li>편차가 <b>일정할 때만</b> 보정한다. 들쭉날쭉하면 자세·호흡·방아쇠부터 점검한다.</li><li>이 수업의 총은 <b>영점 조절이 되지 않아</b> 조준점 보정을 쓴다.</li></ol>`},
+{t:'⑤ 실습 순서와 결과 읽는 법',h:`<ol style="margin:6px 0;padding-left:20px"><li>같은 자세로 3발을 쏘고, 맞은 위치를 표적에서 터치해요.</li><li>총을 <b>완전히 내렸다가</b> 다시 들어 올려요. (3회 반복)</li><li>분석 표에서 <b>회 안 퍼짐</b>과 <b>회 사이 차이</b>를 비교해요.</li></ol>
+<table><tr><th>회 안</th><th>회 사이</th><th>뜻</th></tr><tr><td>좁음</td><td>같은 쪽</td><td>편차형 → <b>보정</b></td></tr><tr><td>좁음</td><td>제각각</td><td>들어 올릴 때마다 달라짐 → 발·그립·확인 순서 고정</td></tr><tr><td>넓음</td><td>-</td><td>산포형 → 호흡·방아쇠·정렬 점검</td></tr></table>`}
 ];
 let zcp=0;
 function zcRender(){const c=ZC[zcp];$('zc-body').innerHTML=`<b>${c.t}</b>${c.h}`;$('zc-pg').textContent=(zcp+1)+' / '+ZC.length;$('zc-prev').disabled=zcp===0;$('zc-next').disabled=zcp===ZC.length-1;}
@@ -1034,16 +1033,22 @@ function zRestore(){
 /* 판정: 편차가 일정한가? (3회의 중심이 전체 중심에서 벗어난 정도 ≤ 회 안의 흩어짐) ★기준값은 경험칙, 수업 데이터로 조정 */
 function zJudge(){
   const R=ZR.rounds,S=statsXY([].concat(...R));
-  const rc=R.map(r=>({x:r.reduce((a,o)=>a+o.x,0)/r.length,y:r.reduce((a,o)=>a+o.y,0)/r.length}));
+  const rc=R.map(r=>{
+    const x=r.reduce((a,o)=>a+o.x,0)/r.length,y=r.reduce((a,o)=>a+o.y,0)/r.length;
+    return {x,y,w:r.reduce((a,o)=>a+Math.hypot(o.x-x,o.y-y),0)/r.length};   /* w: 그 회 안에서의 퍼짐 */
+  });
   const db=rc.reduce((a,c)=>a+Math.hypot(c.x-S.cx,c.y-S.cy),0)/3;
-  const w=R.reduce((a,r,i)=>a+r.reduce((b,o)=>b+Math.hypot(o.x-rc[i].x,o.y-rc[i].y),0),0)/9;
+  const w=rc.reduce((a,c)=>a+c.w,0)/3;
   const steady=db<=Math.max(1,w);
   const clock=clockOf(-S.cx,-S.cy),rings=Math.max(0.5,Math.round(S.off*2)/2);
   let verdict,advice;
   if(S.bias&&steady){verdict='shift';advice=`${clock}으로 ${rings}링 보정`;}
   else if(S.bias||S.sp>=3){verdict='scatter';advice='편차 불일정 또는 넓게 흩어짐: 자세·호흡·격발 점검';}
   else{verdict='ok';advice='보정 불필요';}
-  return {S,rc,db,w,steady,verdict,advice,clock,rings,dir:dirOf(S.cx,S.cy,0.6).name};
+  const xs=rc.map(c=>c.x),ys=rc.map(c=>c.y),offs=rc.map(c=>Math.hypot(c.x,c.y));
+  return {S,rc,db,w,steady,verdict,advice,clock,rings,dir:dirOf(S.cx,S.cy,0.6).name,
+    rx:Math.max(...xs)-Math.min(...xs),ry:Math.max(...ys)-Math.min(...ys),offs,
+    settling:offs[2]<=1&&offs[0]-offs[2]>=1.5};   /* 1회→3회로 갈수록 중앙에 가까워짐 */
 }
 function tgtRings(){let s='';for(let k=1;k<=10;k++){const r=(11-k)*12,blk=k>=7;s+=`<circle cx="150" cy="150" r="${r}" fill="${blk?'#111':'#fff'}" stroke="${blk?'#fff':'#64748b'}" stroke-width="1"/>`;}return s;}
 function drawZ(){
@@ -1061,12 +1066,41 @@ function drawZ(){
 }
 function zOut(J){
   const S=J.S,sz=v=>v<1.5?'좁음':v<3?'보통':'넓음';
-  const rows=ZR.rounds.map((r,i)=>{const c=J.rc[i];return `<tr><td><span class="zdot" style="background:${ZCOL[i]}"></span>${i+1}회</td><td>${dirOf(c.x,c.y,0.6).name}</td><td>${Math.hypot(c.x,c.y).toFixed(1)}링</td><td>${zSum(r)}점</td></tr>`;}).join('');
-  let h=`<p style="margin:0 0 4px"><b>② 편차 분석</b></p><table class="tb"><tr><th>회</th><th>탄착군 중심 방향</th><th>중앙에서</th><th>합계</th></tr>${rows}</table>`;
+  const hf=v=>(Math.round(Math.abs(v)*2)/2).toFixed(1);
+  const pos=(x,y)=>{const a=[];
+    if(Math.abs(x)>=0.3)a.push((x<0?'왼쪽 ':'오른쪽 ')+Math.abs(x).toFixed(1));
+    if(Math.abs(y)>=0.3)a.push((y<0?'위 ':'아래 ')+Math.abs(y).toFixed(1));
+    return a.length?a.join(' · '):'중앙';};
+  const rows=ZR.rounds.map((r,i)=>{const c=J.rc[i];
+    return `<tr><td><span class="zdot" style="background:${ZCOL[i]}"></span>${i+1}회</td><td>${pos(c.x,c.y)}</td><td>${c.w.toFixed(1)}링</td><td>${zSum(r)}점</td></tr>`;}).join('');
+  let h=`<p style="margin:0 0 4px"><b>② 편차 분석</b></p><table class="tb"><tr><th>회</th><th>탄착군 중심 (중앙에서, 링)</th><th>회 안 퍼짐</th><th>합계</th></tr>${rows}</table>`;
   h+=`<p>9발 전체 중심: <b>${J.dir}</b> 쪽 ${S.off.toFixed(1)}링 · 탄착군 크기 <b>${sz(S.sp)}</b>(${S.sp.toFixed(1)}링) · 3회 중심의 흩어짐 ${J.db.toFixed(1)}링</p>`;
-  if(J.verdict==='ok')h+=`<p>✅ <b>보정이 필요 없어요.</b> 탄착군 중심이 표적 중앙 근처예요. 지금 자세를 유지하세요.</p>`;
-  else if(J.verdict==='scatter')h+=S.bias?`<p>⚠️ <b>편차가 일정하지 않아요.</b> 회마다 탄이 모이는 곳이 달라요. 보정하지 말고 ② 자세 점검, ③ 안정성, 호흡, 방아쇠를 점검한 뒤 <b>처음부터 다시</b> 해 보세요. 총을 내렸다가 들 때마다 똑같이 드는지도 확인하세요.</p>`:`<p>⚠️ 탄이 넓게 흩어져서 한쪽으로 치우쳤는지 판단하기 어려워요. 자세·호흡·방아쇠부터 점검하고 다시 해 보세요.</p>`;
-  else h+=`<p>🧭 <b>편차가 일정해요.</b></p><p><b>③ 보정 계획</b>: 탄이 <b>${J.dir}</b>으로 모였으니, 조준점을 반대쪽인 <b>${J.clock}</b>으로 약 <b>${J.rings}링</b> 옮겨 겨눕니다. (표적의 파란 점선 원이 보정 조준점이에요)</p>${S.sp>=3?'<p class="mut">탄착군이 넓어서 보정 효과가 작을 수 있어요.</p>':''}<p class="mut">이 보정값은 총·거리·내 자세가 합쳐진 값이에요. 총이나 거리가 바뀌면 다시 잡으세요.</p>`;
+  if(J.verdict==='ok'){
+    h+=`<p>✅ <b>보정이 필요 없어요.</b> 탄착군 중심이 표적 중앙 근처예요. 지금 자세와 루틴을 그대로 유지하세요.</p>`;
+  }else if(J.verdict==='scatter'){
+    const tight=J.w<1.5,goal=Math.max(1,J.w).toFixed(1);
+    h+=`<p>⚠️ <b>${S.bias?'편차가 일정하지 않아 보정할 수 없어요.':'탄이 넓게 흩어져 보정 여부를 판단하기 어려워요.'}</b> 보정은 탄이 <u>매번 같은 쪽</u>으로 갈 때만 효과가 있어요. 들쭉날쭉한 상태에서 평균으로 보정하면 오히려 더 빗나가요.</p>`;
+    h+=`<p><b>🔎 무엇이 문제였나</b><br>`+(tight
+      ?`각 회의 3발은 평균 <b>${J.w.toFixed(1)}링</b> 안에 모여 있어요. 👍 방아쇠를 당기는 동작과 호흡은 비교적 일정하다는 뜻이에요.<br>그런데 <b>회마다 모이는 위치가 달라요.</b> 쏘는 동작이 아니라 <b>총을 내렸다가 다시 들어 조준선을 맞추는 과정</b>이 매번 달랐다는 신호예요.`
+      :`한 회의 3발도 평균 <b>${J.w.toFixed(1)}링</b>씩 흩어져 있어요. 회 사이의 차이보다 <b>쏘는 동작 자체</b>(조준선 정렬을 끝내기 전에 쏨, 호흡, 방아쇠를 급하게 당김)가 발마다 달랐을 가능성이 커요.`)+`</p>`;
+    const ax=[];
+    ax.push(`↔ 좌우: 3회 중심이 ${J.rx.toFixed(1)}링 범위에서 움직였어요 → <b>${J.rx<=1.5?'일정한 편':'들쭉날쭉'}</b>`+(J.rx>1.5?'<br>&nbsp;&nbsp;가늠쇠가 홈 한가운데인지(양쪽 빛틈 너비가 같은지), 검지가 방아쇠 첫 마디 중앙에 닿는지 매번 확인하세요.':''));
+    ax.push(`↕ 상하: 3회 중심이 ${J.ry.toFixed(1)}링 범위에서 움직였어요 → <b>${J.ry<=1.5?'일정한 편':'들쭉날쭉'}</b>`+(J.ry>1.5?'<br>&nbsp;&nbsp;가늠쇠 윗면과 가늠자 윗면의 높이를 맞췄는지, 팔을 드는 높이와 손목 각도가 매번 같은지 확인하세요.':''));
+    h+=`<p><b>📐 방향별로 보면</b><br>${ax.join('<br>')}</p>`;
+    if(J.settling)h+=`<p><b>📈 좋은 신호</b><br>회가 갈수록 중앙에 가까워졌어요 (${J.offs.map(v=>v.toFixed(1)).join('링 → ')}링). 처음에는 감을 잡는 중이었을 수 있어요. 지금 보정하면 3회에서 잘 맞던 것을 오히려 망칠 수 있으니, <b>3회에서 어떻게 섰고 어떻게 쥐고 어떤 순서로 조준했는지 떠올려</b> 그대로 다시 해 보세요.</p>`;
+    h+=`<p><b>✅ 다시 할 때 해 볼 것</b><br>`+(tight
+      ?`1. <b>발 위치</b>를 바닥 테이프나 선에 맞춰 매번 같게 서요.<br>2. 총을 쥘 때 <b>손의 위치(그립)</b>를 매번 같은 자리로 잡아요.<br>3. 들어 올린 뒤 <b>가늠쇠 높이 → 좌우 빛틈 확인</b>을 끝낸 다음에 쏴요.<br>4. 한 회가 끝나면 총을 <b>완전히 내리고</b>, 같은 순서로 다시 들어요.`
+      :`1. 가늠쇠가 홈 안에 들어온 것을 <b>확인한 뒤에만</b> 쏴요. 급하게 쏘지 않아요.<br>2. 숨을 반쯤 내쉬고 멈춘 뒤, 검지 첫 마디로 곧게 당겨요.<br>3. 팔이 지치면 내려서 쉬었다가 다시 들어요. (③ 안정성 측정으로 흔들림도 확인해 보세요)`)
+      +`<br><span class="mut">🎯 다음 목표: 3회 중심끼리의 차이를 약 ${goal}링 안으로 줄이기. 그러면 보정 계획이 나와요.</span></p>`;
+  }else{
+    const mx=-S.cx,my=-S.cy,mv=[];
+    if(Math.abs(mx)>=0.5)mv.push(`가로: <b>${mx>0?'오른쪽':'왼쪽'} ${hf(mx)}링</b>`);
+    if(Math.abs(my)>=0.5)mv.push(`세로: <b>${my>0?'아래':'위'} ${hf(my)}링</b>`);
+    h+=`<p>🧭 <b>편차가 일정해요.</b> 3회의 중심이 서로 가까워서(평균 ${J.db.toFixed(1)}링 차이) 우연이 아니라 <b>매번 같은 쪽으로 가는 습관</b>이에요. 이런 경우에만 보정이 효과가 있어요.</p>`;
+    h+=`<p><b>③ 보정 계획</b>: 탄이 <b>${J.dir}</b>으로 평균 ${S.off.toFixed(1)}링 모였으니, 조준점을 반대쪽(<b>${J.clock}</b>)으로 옮겨요.<br>→ ${mv.join(' · ')} <span class="mut">(표적의 파란 점선 원이 보정 조준점이에요. 참고: 검은 원 가장자리는 중앙에서 4링이에요.)</span></p>`;
+    h+=(S.sp>=3?'<p class="mut">탄착군이 넓어서 보정 효과가 작을 수 있어요. 보정과 함께 자세도 점검하세요.</p>':'<p class="mut">탄착군이 잘 모여 있어서 보정 효과가 클 거예요. 👍</p>');
+    h+=`<p class="mut">이 보정값은 총·거리·내 자세가 합쳐진 값이에요. 총이나 거리가 바뀌면 다시 잡으세요.</p>`;
+  }
   if(J.verdict==='shift'&&ZR.retest.length===3){
     const R=statsXY(ZR.retest),a1=zSum([].concat(...ZR.rounds))/9,a2=zSum(ZR.retest)/3;
     const arrow=(b,a,lowGood)=>{const d=a-b;if(Math.abs(d)<0.05)return '→';return (lowGood?d<0:d>0)?'<span class="up">▲</span>':'<span class="dn">▼</span>';};
@@ -1386,6 +1420,31 @@ $('lg-go').onclick=lgGo;
 $('login').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT')lgGo();});
 $('logout').onclick=()=>{sessionStorage.removeItem('user');location.reload();};
 lgMode('login');applyUser();restoreDraft();
+</script>
+<script>
+/* 화면 켜짐 유지 (Screen Wake Lock): ⑦ 실사 기록의 스톱워치가 작동하는 동안만 화면이 꺼지지 않게 함 */
+(function(){
+  if(!('wakeLock' in navigator))return;      /* 지원하지 않는 브라우저는 아무 것도 하지 않음 */
+  var lock=null,busy=false;
+  /* 화면을 켜 두어야 하는 상태인가? (스톱워치 작동 중) */
+  function need(){return typeof SS!=='undefined'&&SS.run===true;}
+  function get(){
+    if(busy||lock||document.visibilityState!=='visible')return;
+    busy=true;
+    navigator.wakeLock.request('screen').then(function(l){
+      busy=false;
+      if(!need()){l.release();return;}       /* 요청하는 사이에 멈췄으면 바로 해제 */
+      lock=l;
+      l.addEventListener('release',function(){lock=null;});
+    }).catch(function(){busy=false;});       /* 절전 모드 등으로 거부되면 다음 확인 때 다시 시도 */
+  }
+  function drop(){
+    if(lock){var l=lock;lock=null;l.release().catch(function(){});}
+  }
+  function sync(){need()?get():drop();}
+  setInterval(sync,500);                     /* 스톱워치 상태를 0.5초마다 확인 */
+  document.addEventListener('visibilitychange',sync);   /* 다른 앱에 갔다 돌아오면 다시 잡음 */
+})();
 </script>
 </body>
 </html>
