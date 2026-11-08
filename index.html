@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>레이저 권총 사격 입문</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,'Malgun Gothic',sans-serif;background:#f1f5f9;color:#0f172a;line-height:1.55}
+header{background:#0f172a;color:#fff;padding:12px 14px}
+h1{margin:0;font-size:17px}
+nav{display:flex;gap:6px;overflow-x:auto;padding:8px;background:#e2e8f0;position:sticky;top:0;z-index:5}
+main{max-width:720px;margin:0 auto;padding:12px}
+.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px #0002}
+.card h2{margin:0 0 8px;font-size:17px}
+.chip{border:1px solid #94a3b8;background:#fff;border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer;white-space:nowrap;font-family:inherit}
+.chip.on{background:#0f172a;color:#fff;border-color:#0f172a}
+.btn{background:#2563eb;color:#fff;border:0;border-radius:8px;padding:9px 14px;font-size:15px;cursor:pointer;font-family:inherit}
+.btn.sec{background:#64748b}
+.btn.big{width:100%;padding:12px;font-size:17px}
+.btn:disabled{opacity:.5}
+.tin{border:1px solid #94a3b8;border-radius:8px;padding:9px;font-size:16px;margin:4px 0;font-family:inherit}
+.wide{width:100%}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.res{margin-top:8px;padding:8px 10px;border-radius:8px;background:#f1f5f9;font-size:14px;min-height:20px}
+.okc{background:#dcfce7;color:#166534}
+.badc{background:#fee2e2;color:#991b1b}
+.mut{color:#64748b;font-size:13px}
+svg{width:100%;height:auto;background:#f8fafc;border-radius:8px;border:1px solid #cbd5e1;display:block;touch-action:manipulation}
+.pc{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid #e2e8f0;align-items:flex-start}
+.pc input{width:22px;height:22px;margin-top:2px;flex:none}
+.warn{background:#fef3c7;border-left:4px solid #f59e0b;padding:8px 10px;border-radius:6px;margin:6px 0}
+.qq{padding:10px 0;border-bottom:1px solid #e2e8f0}
+.qq button{display:block;width:100%;text-align:left;margin:4px 0;padding:9px;border:1px solid #94a3b8;border-radius:8px;background:#fff;font-size:15px;font-family:inherit;cursor:pointer}
+.qq button.okc{border-color:#16a34a}
+.qq button.badc{border-color:#dc2626}
+.big-t{font-size:34px;font-weight:700;font-variant-numeric:tabular-nums;text-align:center}
+.sl{width:100%}
+textarea.tin{min-height:64px;resize:vertical}
+.hide{display:none!important}
+#login{position:fixed;inset:0;background:#0f172a;z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.lg-box{background:#fff;border-radius:16px;padding:22px;width:100%;max-width:420px}
+.lg-box h2{margin:0 0 12px;font-size:20px}
+.tin[readonly]{background:#f1f5f9}
+.pdesc{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:6px 12px;margin:8px 0;font-size:14px}
+.pdesc ul{margin:4px 0;padding-left:20px}
+.lbar{height:14px;background:#e2e8f0;border-radius:7px;overflow:hidden;margin:6px 0}
+.lbar>div{height:100%;width:0;background:#22c55e;transition:width .1s}
+.sg{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:8px 0}
+.sg .chip{text-align:center;padding:10px 0;font-size:16px}
+.scs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.sc{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px;font-size:13px}
+.up{color:#16a34a}.dn{color:#dc2626}
+.tb{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.tb th,.tb td{border:1px solid #e2e8f0;padding:4px;text-align:center}
+.tb th{background:#f1f5f9}
+select.tin{background:#fff}
+</style>
+</head>
+<body>
+<div id="login">
+ <div class="lg-box">
+  <h2>🎯 레이저 권총 사격 입문</h2>
+  <div class="row" style="margin-bottom:10px">
+   <button class="chip on" id="lg-tab-login" type="button">로그인</button>
+   <button class="chip" id="lg-tab-reg" type="button">처음 접속 (비밀번호 만들기)</button>
+  </div>
+  <input id="lg-sid" class="tin wide" placeholder="학번 (1학년 1반 1번 → 10101)" maxlength="5" inputmode="numeric" autocomplete="off">
+  <input id="lg-name" class="tin wide lg-reg" placeholder="이름 (예: 유영환)" maxlength="10" autocomplete="off">
+  <input id="lg-pin" class="tin wide" type="password" placeholder="비밀번호 (숫자 4자리)" maxlength="4" inputmode="numeric" autocomplete="off">
+  <input id="lg-pin2" class="tin wide lg-reg" type="password" placeholder="비밀번호 확인" maxlength="4" inputmode="numeric" autocomplete="off">
+  <p><button class="btn big" id="lg-go" type="button">로그인</button></p>
+  <div class="res" id="lg-msg"></div>
+ </div>
+</div>
+<header>
+<h1 style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap"><span>🎯 레이저 권총 사격 입문 · 자세와 조준선 정렬</span><span style="font-size:13px;font-weight:400"><span id="who"></span> <button id="logout" class="chip hide" type="button" style="color:#0f172a">로그아웃</button></span></h1>
+</header>
+<nav>
+ <button class="chip on" data-t="t-safe" type="button">① 안전·개념</button>
+ <button class="chip" data-t="t-pose" type="button">② 자세 점검</button>
+ <button class="chip" data-t="t-stab" type="button">③ 안정성 측정</button>
+ <button class="chip" data-t="t-aim" type="button">④ 조준 연습</button>
+ <button class="chip" data-t="t-quiz" type="button">⑤ 퀴즈</button>
+ <button class="chip" data-t="t-game" type="button">⑥ 게임</button>
+ <button class="chip" data-t="t-shot" type="button">⑦ 실사 기록</button>
+ <button class="chip" data-t="t-rec" type="button">⑧ 기록 저장</button>
+ <button class="chip" data-t="t-grow" type="button">⑨ 내 성장</button>
+</nav>
+<main>
+<!-- ① 안전·개념 -->
+<section class="tab" id="t-safe">
+ <div class="card"><h2>⚠️ 안전수칙</h2>
+  <div class="warn"><b>1.</b> 총구는 항상 안전한 방향(표적 쪽)을 향합니다. 사람에게 절대 겨누지 않습니다.</div>
+  <div class="warn"><b>2.</b> 쏠 준비가 될 때까지 검지는 방아쇠울 밖(옆면)에 둡니다.</div>
+  <div class="warn"><b>3.</b> 선생님의 "사격 시작" 신호 후에만 조준하고, "사격 중지"에서는 즉시 멈춥니다.</div>
+  <div class="warn"><b>4.</b> 사대에서는 뛰거나 장난치지 않고, 총을 든 채 뒤돌지 않습니다.</div>
+  <div class="warn"><b>5.</b> 사용 후에는 선생님의 확인을 받고 내려놓습니다.</div>
+ </div>
+ <div class="card"><h2>🔎 핵심 용어</h2>
+  <p><b>가늠자</b>: 눈 가까이(총 뒤쪽)에 있는 홈. <b>가늠쇠</b>: 총구 쪽 끝의 작은 돌기. 눈의 초점은 <b>가늠쇠</b>에 맞추고, 가늠자와 표적은 흐릿하게 보이는 것이 정상입니다.</p>
+  <svg id="ref-svg" viewBox="0 0 300 180"></svg>
+  <p class="mut">▲ 올바른 조준선 정렬: 가늠쇠 윗면과 가늠자 윗면이 같은 높이이고, 좌우 빛틈(흰 틈)의 너비가 같습니다.</p>
+  <svg id="ref6" viewBox="0 0 300 220"></svg>
+  <p class="mut">▲ 6시 조준: 가늠쇠 윗면을 검은 원의 맨 아래(6시 방향) 중앙에 얇은 흰 틈을 두고 맞춥니다.</p>
+ </div>
+</section>
+<!-- ② 자세 점검 -->
+<section class="tab hide" id="t-pose">
+ <div class="card"><h2>🧍 올바른 자세 점검표</h2>
+  <div class="row" style="margin-bottom:8px">
+   <button class="chip on" id="pm-one" type="button">☝️ 한 손 사격</button>
+   <button class="chip" id="pm-two" type="button">🙌 두 손 (입문 비교)</button>
+  </div>
+  <svg id="pose-svg" viewBox="0 0 300 240"></svg>
+  <div class="pdesc" id="pose-desc"></div>
+  <p class="mut">친구와 서로 자세를 보며 하나씩 확인하세요.</p>
+  <div id="pos"></div>
+  <div class="res" id="pos-sum"></div>
+ </div>
+</section>
+<!-- ③ 안정성 측정 -->
+<section class="tab hide" id="t-stab">
+ <div class="card"><h2>📱 자세 안정성 측정</h2>
+  <p class="mut">스마트폰의 자이로(회전) 센서로 손과 팔의 흔들림을 10초간 측정합니다. 폰을 총처럼 쥐고 사격 자세를 잡은 뒤 시작하세요.</p>
+  <div class="warn">⚠️ 폰을 단단히 쥐고 주변 친구와 거리를 두세요. 폰도 사람 쪽으로 향하지 않습니다. 스마트폰에서 열어야 하고, 아이폰은 "동작 및 방향 접근" 허용 창이 나오면 <b>허용</b>을 누르세요.</div>
+  <div class="mut">측정 자세: <b id="st-mode"></b> (② 자세 점검에서 바꿀 수 있어요)</div>
+  <div class="big-t" id="st-big">준비</div>
+  <div class="lbar"><div id="st-bar"></div></div>
+  <div class="row"><button class="btn" id="st-start" type="button">▶ 측정 시작 (3초 뒤 10초 측정)</button><button class="btn sec" id="st-stop" type="button">중단</button></div>
+  <div class="res" id="st-res">측정 시작을 누르면 센서 사용 허용 창이 나올 수 있어요.</div>
+  <svg id="st-svg" viewBox="0 0 300 120" class="hide" style="margin-top:8px"></svg>
+  <div class="res" id="st-list"></div>
+ </div>
+</section>
+<!-- ④ 조준 연습 -->
+<section class="tab hide" id="t-aim">
+ <div class="card">
+  <div class="row"><button class="chip on" id="m-a" type="button">조준선 정렬</button><button class="chip" id="m-s" type="button">6시 조준</button></div>
+ </div>
+ <div class="card" id="p-a"><h2>↔️ 조준선 정렬 연습</h2>
+  <p class="mut">슬라이더로 가늠쇠(빨강)를 움직여 가늠자 홈 한가운데, 윗면 높이를 맞춘 뒤 [정렬 확인]을 누르세요.</p>
+  <svg id="pa-svg" viewBox="0 0 300 180"></svg>
+  <label class="mut">좌우 (왼쪽 ↔ 오른쪽)</label><input class="sl" type="range" id="pa-x" min="-40" max="40" value="20">
+  <label class="mut">상하 (위 ↔ 아래)</label><input class="sl" type="range" id="pa-y" min="-40" max="40" value="-20">
+  <div class="row"><button class="btn" id="pa-chk" type="button">정렬 확인</button><button class="btn sec" id="pa-new" type="button">새 문제</button><span>성공 <b id="pa-cnt">0</b>회</span></div>
+  <div class="res" id="pa-res"></div>
+ </div>
+ <div class="card hide" id="p-s"><h2>⏰ 6시 조준 연습</h2>
+  <p class="mut">가늠쇠 윗면이 오는 위치를 화면에서 <b>터치</b>하세요. 검은 원 맨 아래 중앙, 얇은 흰 틈이 정답입니다.</p>
+  <svg id="s6-svg" viewBox="0 0 300 220"></svg>
+  <div class="row" style="margin-top:6px"><span>성공 <b id="s6-cnt">0</b>회</span></div>
+  <div class="res" id="s6-res"></div>
+ </div>
+</section>
+<!-- ⑤ 퀴즈 -->
+<section class="tab hide" id="t-quiz">
+ <div class="card"><h2>❓ 확인 퀴즈</h2>
+  <div id="qz"></div>
+  <div class="row" style="margin-top:8px"><div class="res" id="qz-sum" style="flex:1">정답 0 / 시도 0</div><button class="btn sec" id="qz-reset" type="button">처음부터 다시</button></div>
+ </div>
+</section>
+<!-- ⑥ 게임 -->
+<section class="tab hide" id="t-game">
+ <div class="card"><h2>🎮 조준선 정렬 타임어택</h2>
+  <p class="mut">10번 연속으로 조준선을 맞춥니다. 정확할수록 높은 점수(회당 최대 5점, 총 50점)이고, 전체 걸린 시간이 기록이 됩니다.</p>
+  <div class="row" id="g-lv"><button class="chip" data-lv="쉬움" type="button">쉬움</button><button class="chip on" data-lv="보통" type="button">보통</button><button class="chip" data-lv="어려움" type="button">어려움</button></div>
+  <p><button class="btn big" id="g-start" type="button">▶ 게임 시작</button></p>
+  <div id="g-play" class="hide">
+   <div class="big-t" id="g-time">00:00.00</div>
+   <div class="row" style="justify-content:center">라운드 <b id="g-round">1</b>/10 · 점수 <b id="g-score">0</b>/50</div>
+   <svg id="g-svg" viewBox="0 0 300 180"></svg>
+   <label class="mut">좌우</label><input class="sl" type="range" id="g-x" min="-40" max="40" value="0">
+   <label class="mut">상하</label><input class="sl" type="range" id="g-y" min="-40" max="40" value="0">
+   <div class="row"><button class="btn" id="g-ok" type="button">정렬 완료</button><button class="btn sec" id="g-cancel" type="button">그만하기</button></div>
+  </div>
+  <div class="res" id="g-res"></div>
+ </div>
+</section>
+<!-- ⑦ 실사 기록 -->
+<section class="tab hide" id="t-shot">
+ <div class="card"><h2>🔫 실제 레이저 권총 명중 기록</h2>
+  <p class="mut">레이저 권총으로 쏜 결과를 <b>10발</b> 입력합니다. 전자표적 화면과 같은 위치를 아래 표적에서 <b>터치</b>하면 점수가 자동 계산됩니다. 점수만 알면 아래 숫자 버튼(0~10)을 눌러도 됩니다.</p>
+  <svg id="sh-svg" viewBox="0 0 300 300" style="max-width:380px;margin:0 auto"></svg>
+  <div class="mut" style="margin-top:6px">숫자로 입력 (점수 버튼):</div>
+  <div class="sg" id="sh-btns"></div>
+  <div class="row" style="margin:6px 0"><b><span id="sh-cnt">0</span>/10발</b><button class="btn sec" id="sh-undo" type="button">↩ 마지막 발 취소</button><button class="btn sec" id="sh-reset" type="button">🗑 새 시리즈</button></div>
+  <div class="row" id="sh-list"></div>
+  <div class="res" id="sh-sum"></div>
+  <div class="res" id="sh-ana"></div>
+  <p><button class="btn" id="sh-go" type="button">기록 저장하러 가기 →</button></p>
+ </div>
+</section>
+<!-- ⑧ 기록 저장 -->
+<section class="tab hide" id="t-rec">
+ <div class="card"><h2>📝 오늘의 기록 저장</h2>
+  <div class="res" id="rec-sum"></div>
+  <div class="row" style="margin-top:6px">
+   <input id="rec-sid" class="tin" style="width:110px" readonly placeholder="학번">
+   <input id="rec-name" class="tin" style="width:110px" readonly placeholder="이름">
+   <select id="rec-lesson" class="tin"></select>
+  </div>
+  <label class="mut">오늘의 기록 (게임을 하면 자동 입력, 직접 입력도 가능)</label>
+  <input id="rec-time" class="tin wide" placeholder="00:00.00" maxlength="8" inputmode="decimal">
+  <label class="mut">👍 잘한 점</label>
+  <div class="row" id="gd-chips"></div>
+  <textarea id="rec-good" class="tin wide" maxlength="500" placeholder="잘한 점을 적어 보세요"></textarea>
+  <label class="mut">🔧 보완할 점</label>
+  <div class="row" id="im-chips"></div>
+  <textarea id="rec-improve" class="tin wide" maxlength="500" placeholder="보완할 점을 적어 보세요"></textarea>
+  <p class="row"><button class="btn" id="rec-save" type="button">💾 저장</button><button class="btn sec" id="rec-resend" type="button">미전송 다시 보내기</button><button class="btn sec" id="rec-load" type="button">오늘 서버 기록 보기</button></p>
+  <div class="res" id="rec-msg"></div>
+ </div>
+ <div class="card"><h2>🕘 이 기기의 최근 기록</h2><div id="rec-hist"></div></div>
+ <div class="card"><h2>☁️ 서버(스프레드시트) 오늘 기록</h2><div id="rec-srv" class="mut">[오늘 서버 기록 보기]를 누르세요.</div></div>
+</section>
+<!-- ⑨ 내 성장 -->
+<section class="tab hide" id="t-grow">
+ <div class="card"><h2>📈 내 성장 기록</h2>
+  <div class="row"><button class="btn sec" id="gr-reload" type="button">🔄 새로 불러오기</button><span class="mut" id="gr-note"></span></div>
+  <div class="scs" id="gr-sum"></div>
+ </div>
+ <div class="card"><h2>📊 차시별 변화 그래프</h2>
+  <div class="row" id="gr-chips">
+   <button class="chip on" data-m="score" type="button">게임 점수</button>
+   <button class="chip" data-m="shot" type="button">실사 총점</button>
+   <button class="chip" data-m="stab" type="button">안정성</button>
+   <button class="chip" data-m="time" type="button">게임 기록(초)</button>
+  </div>
+  <svg id="gr-svg" viewBox="0 0 320 200" style="margin-top:8px"></svg>
+  <p class="mut" id="gr-cap"></p>
+  <div id="gr-tbl"></div>
+ </div>
+</section>
+</main>
+<script>
+/* ================= 공통 ================= */
+const $=id=>document.getElementById(id);
+const SHEET_DEFAULT_URL='https://script.google.com/macros/s/AKfycbzWIp6S43Jq_QVVdVLaCD5WdCsfxZVUtOvudzVKbGk6WUEwmn4ym3WDvf1SW0kpx2kjPg/exec';
+const getUrl=()=>SHEET_DEFAULT_URL.trim();
+const p2=n=>String(n).padStart(2,'0');
+const todayStr=()=>{const d=new Date();return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());};
+const fmtT=ms=>{const t=Math.floor(ms/10);return p2(Math.floor(t/6000))+':'+p2(Math.floor(t/100)%60)+'.'+p2(t%100);};
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a, sgn=()=>Math.random()<.5?-1:1;
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const G={posture:0,align:0,six:0,qok:0,qtry:0,score:'',level:'',elapsed:null,stab:'',shots:'',shotTotal:''};
+const SW={run:false,t0:0,id:0};
+const st={run:false,cancel:false,measuring:false,got:false,cur:0,samples:[],t0:0,handler:null};
+const say=(id,t,c)=>{const m=$(id);m.className='res '+(c||'');m.innerHTML=t;};
+/* ================= 탭 ================= */
+const TABIDS=['t-safe','t-pose','t-stab','t-aim','t-quiz','t-game','t-shot','t-rec','t-grow'];
+const NAVB=document.querySelectorAll('nav .chip');
+function showTab(id){
+  if(st.run)st.cancel=true;
+  TABIDS.forEach(t=>$(t).classList.toggle('hide',t!==id));
+  NAVB.forEach(b=>b.classList.toggle('on',b.dataset.t===id));
+  if(id==='t-rec')recRefresh();
+  if(id==='t-grow')growLoad(false);
+  window.scrollTo(0,0);
+}
+NAVB.forEach(b=>b.onclick=()=>showTab(b.dataset.t));
+/* ================= 그림 ================= */
+function drawSight(el,dx,dy){
+  el.innerHTML=`<rect x="60" y="70" width="70" height="55" fill="#334155"/><rect x="170" y="70" width="70" height="55" fill="#334155"/><rect x="130" y="110" width="40" height="15" fill="#334155"/><rect x="${136+dx}" y="${70+dy}" width="28" height="40" fill="#dc2626"/><text x="150" y="155" font-size="11" text-anchor="middle" fill="#64748b">가늠자(회색) 홈 안의 가늠쇠(빨강)</text>`;
+}
+function draw6(el,t,mx,my){
+  el.innerHTML=`<circle cx="${t.cx}" cy="${t.cy}" r="${t.r+28}" fill="#fff" stroke="#94a3b8"/><circle cx="${t.cx}" cy="${t.cy}" r="${t.r}" fill="#111"/>`+(my!=null?`<rect x="${mx-7}" y="${my}" width="14" height="40" fill="#dc2626"/>`:'');
+}
+drawSight($('ref-svg'),0,0);
+draw6($('ref6'),{cx:150,cy:85,r:55},150,85+55+8);
+/* ================= ② 자세 점검 (한 손 / 두 손) ================= */
+const POSE={
+ one:{label:'한 손',
+  desc:`<p><b>☝️ 한 손 사격</b>은 레이저 권총(공기권총) 경기에서 쓰는 실제 자세입니다. 한 팔로 총을 지탱하므로 <b>몸의 균형</b>과 <b>손목 고정</b>이 중요합니다.</p>
+   <ul><li>몸을 표적에 대해 비스듬히 세워 사격 팔·눈·표적이 일직선이 되게 합니다.</li>
+   <li>반대 손은 허리나 주머니에 두어 몸의 흔들림을 줄입니다.</li>
+   <li>팔이 피로하면 조준선이 떨립니다. 조준이 길어지면 팔을 내리고 쉬었다가 다시 올립니다.</li></ul>`,
+  items:['<b>발</b>: 어깨너비로 벌리고 체중을 양발에 고르게 둡니다.',
+   '<b>몸</b>: 표적을 향해 비스듬히 서고, 상체를 곧게 세웁니다.',
+   '<b>사격 팔</b>: 어깨 높이로 곧게 뻗고 팔꿈치를 과하게 꺾지 않습니다.',
+   '<b>그립</b>: 손바닥과 손가락으로 단단히 쥐고 손목을 일직선으로 유지합니다.',
+   '<b>검지</b>: 쏠 준비가 될 때까지 방아쇠울 밖(옆면)에 둡니다.',
+   '<b>반대 손</b>: 힘을 빼고 허리나 주머니에 둡니다.',
+   '<b>눈·호흡</b>: 가늠쇠에 초점을 두고, 숨을 반쯤 내쉰 상태로 잠시 멈춥니다.']},
+ two:{label:'두 손',
+  desc:`<p><b>🙌 두 손 파지</b>는 처음 총의 무게와 조준선 흔들림을 느껴 볼 때 쓰는 <b>입문 비교용</b> 자세입니다. 실제 경기는 한 손 사격이므로, 익숙해지면 ☝️ 한 손 사격으로 넘어갑니다.</p>
+   <ul><li>두 팔이 삼각형 모양이 되도록 뻗어 흔들림을 줄입니다.</li>
+   <li>받침손은 사격 손을 감싸 쥐되, 총의 움직이는 부분을 가리지 않습니다.</li>
+   <li>두 손일 때와 한 손일 때 조준선이 얼마나 흔들리는지 비교해 보세요. (③ 안정성 측정에서 숫자로 비교할 수 있어요)</li></ul>`,
+  items:['<b>발</b>: 어깨너비로 벌리고 체중을 양발에 고르게 둡니다.',
+   '<b>몸</b>: 표적을 향해 거의 정면으로 서고, 상체를 곧게 세웁니다.',
+   '<b>두 팔</b>: 어깨 높이로 곧게 뻗어 삼각형 모양을 만듭니다.',
+   '<b>그립</b>: 받침손으로 사격 손을 감싸 쥐고 손목을 일직선으로 유지합니다.',
+   '<b>검지</b>: 쏠 준비가 될 때까지 방아쇠울 밖(옆면)에 둡니다.',
+   '<b>어깨·팔꿈치</b>: 어깨 힘을 빼고 팔꿈치를 과하게 꺾지 않습니다.',
+   '<b>눈·호흡</b>: 가늠쇠에 초점을 두고, 숨을 반쯤 내쉰 상태로 잠시 멈춥니다.']}
+};
+let pmode='one';
+const pchk={one:Array(7).fill(false),two:Array(7).fill(false)};
+function drawPose(el,mode){
+  const one=mode==='one';
+  const arms=one
+   ?`<polyline points="119,76 106,106 120,130" fill="none" stroke="#94a3b8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+     <line x1="119" y1="76" x2="205" y2="72" stroke="#2563eb" stroke-width="6" stroke-linecap="round"/>`
+   :`<line x1="117" y1="84" x2="206" y2="79" stroke="#0ea5e9" stroke-width="5" stroke-linecap="round"/>
+     <line x1="119" y1="76" x2="205" y2="72" stroke="#2563eb" stroke-width="6" stroke-linecap="round"/>
+     <circle cx="206" cy="79" r="5" fill="#fde7c8" stroke="#334155" stroke-width="2"/>`;
+  const labels=one
+   ?`<text x="8" y="122" font-size="10" fill="#475569">③ 반대 손: 허리</text>
+     <text x="135" y="102" font-size="10" fill="#1d4ed8">② 사격 팔: 곧게·어깨 높이</text>`
+   :`<text x="8" y="122" font-size="10" fill="#475569">③ 두 팔: 삼각형</text>
+     <text x="135" y="102" font-size="10" fill="#1d4ed8">④ 받침손이 사격 손을 감쌈</text>`;
+  const legs=one
+   ?`<line x1="118" y1="140" x2="98" y2="213"/><line x1="118" y1="140" x2="140" y2="213"/>`
+   :`<line x1="118" y1="140" x2="96" y2="213"/><line x1="118" y1="140" x2="142" y2="213"/>`;
+  el.innerHTML=`
+  <line x1="20" y1="215" x2="280" y2="215" stroke="#cbd5e1" stroke-width="3"/>
+  <g stroke="#334155" stroke-width="6" stroke-linecap="round" fill="none">
+   <line x1="120" y1="64" x2="118" y2="140"/>${legs}
+  </g>
+  <circle cx="122" cy="46" r="16" fill="#fde7c8" stroke="#334155" stroke-width="3"/>
+  ${arms}
+  <rect x="203" y="62" width="30" height="10" rx="2" fill="#0f172a"/>
+  <rect x="203" y="70" width="10" height="16" rx="2" fill="#0f172a"/>
+  <circle cx="276" cy="72" r="14" fill="#fff" stroke="#111" stroke-width="2"/><circle cx="276" cy="72" r="7" fill="#111"/>
+  <line x1="134" y1="44" x2="262" y2="72" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4 3"/>
+  <text x="150" y="30" font-size="10" fill="#b45309">⑤ 시선: 가늠쇠에 초점</text>
+  ${labels}
+  <text x="120" y="233" font-size="10" text-anchor="middle" fill="#475569">① 발: 어깨너비</text>
+  <text x="150" y="14" font-size="12" font-weight="700" text-anchor="middle" fill="#0f172a">${one?'한 손 사격 (옆모습)':'두 손 파지 (옆모습)'}</text>`;
+}
+function posSum(){
+  G.posture=pchk[pmode].filter(Boolean).length;
+  say('pos-sum',`${POSE[pmode].label} 자세 점검 <b>${G.posture}/7</b>${G.posture===7?' 🎉 모두 확인했어요!':''}`,G.posture===7?'okc':'');
+}
+function renderPose(){
+  const P=POSE[pmode];
+  $('pm-one').classList.toggle('on',pmode==='one');
+  $('pm-two').classList.toggle('on',pmode==='two');
+  drawPose($('pose-svg'),pmode);
+  $('pose-desc').innerHTML=P.desc;
+  $('pos').innerHTML=P.items.map((t,i)=>`<label class="pc"><input type="checkbox" data-i="${i}"${pchk[pmode][i]?' checked':''}><span>${t}</span></label>`).join('');
+  $('st-mode').textContent=(pmode==='one'?'☝️ ':'🙌 ')+P.label;
+  posSum();
+}
+$('pos').onchange=e=>{
+  const i=e.target.dataset.i;if(i==null)return;
+  pchk[pmode][+i]=e.target.checked;posSum();
+};
+$('pm-one').onclick=()=>{pmode='one';renderPose();};
+$('pm-two').onclick=()=>{pmode='two';renderPose();};
+/* ================= ③ 안정성 측정 (스마트폰 자이로) ================= */
+const STAB={one:[],two:[]};
+function stEnd(){
+  if(st.handler)window.removeEventListener('devicemotion',st.handler);
+  st.handler=null;st.run=false;st.measuring=false;
+  $('st-start').disabled=false;$('st-bar').style.width='0';
+}
+function stRender(){
+  const f=m=>{const a=STAB[m];return a.length?`최고 <b>${Math.max(...a.map(x=>x.score))}</b>점 (${a.length}회, 최근 ${a[a.length-1].score}점)`:'아직 없음';};
+  $('st-list').innerHTML=`☝️ 한 손: ${f('one')}<br>🙌 두 손: ${f('two')}<br><span class="mut">점수가 높을수록 안정적입니다. 한 손과 두 손의 차이를 비교해 보세요.</span>`;
+  const all=[...STAB.one,...STAB.two].map(x=>x.score);
+  G.stab=all.length?Math.max(...all):'';
+}
+async function stStart(){
+  if(st.run)return;
+  const DM=window.DeviceMotionEvent;
+  if(!DM)return say('st-res','이 기기·브라우저는 움직임 센서를 지원하지 않아요. 스마트폰에서 열어 주세요.','badc');
+  if(typeof DM.requestPermission==='function'){
+    try{
+      const r=await DM.requestPermission();
+      if(r!=='granted')return say('st-res','센서 사용이 허용되지 않았어요. 브라우저(사파리) 설정에서 "동작 및 방향 접근"을 허용하세요.','badc');
+    }catch(e){return say('st-res','센서 허용 요청에 실패했어요. 주소가 https로 시작하는지 확인하세요.','badc');}
+  }
+  st.run=true;st.cancel=false;st.measuring=false;st.got=false;st.cur=0;st.samples=[];
+  $('st-start').disabled=true;$('st-svg').classList.add('hide');
+  st.handler=ev=>{
+    const r=ev.rotationRate;if(!r||r.alpha==null||r.beta==null||r.gamma==null)return;
+    st.got=true;const w=Math.hypot(r.alpha,r.beta,r.gamma);st.cur=w;
+    if(st.measuring)st.samples.push([performance.now()-st.t0,w]);
+  };
+  window.addEventListener('devicemotion',st.handler);
+  say('st-res','센서 확인 중…');
+  for(let i=0;i<15&&!st.got;i++)await sleep(100);
+  if(!st.got){stEnd();$('st-big').textContent='준비';return say('st-res','센서 값이 들어오지 않아요. 자이로 센서가 있는 스마트폰에서, https 주소로 열었는지 확인하세요. (컴퓨터에서는 측정할 수 없어요)','badc');}
+  for(let c=3;c>=1&&!st.cancel;c--){
+    $('st-big').textContent=c;say('st-res','📱 폰을 총 쥐듯 잡고 자세를 만드세요. 곧 시작합니다!');await sleep(1000);
+  }
+  const DUR=10000;
+  if(!st.cancel){
+    st.samples=[];st.t0=performance.now();st.measuring=true;say('st-res','🎯 측정 중! 가능한 한 움직이지 마세요.');
+    while(!st.cancel){
+      const el=performance.now()-st.t0;if(el>=DUR)break;
+      $('st-big').textContent=Math.ceil((DUR-el)/1000)+'초';
+      const pc=Math.min(100,st.cur*8);const b=$('st-bar');
+      b.style.width=pc+'%';b.style.background=pc>60?'#ef4444':pc>30?'#f59e0b':'#22c55e';
+      await sleep(100);
+    }
+  }
+  const cancelled=st.cancel;st.measuring=false;
+  const S=st.samples.slice();
+  stEnd();$('st-big').textContent='준비';
+  if(cancelled)return say('st-res','측정을 중단했어요.');
+  stFinish(S);
+}
+function stFinish(S){
+  if(S.length<20)return say('st-res','측정값이 너무 적어요. 다시 시도하세요.','badc');
+  const rms=a=>a.length?Math.sqrt(a.reduce((s,w)=>s+w*w,0)/a.length):0;
+  const R=rms(S.map(x=>x[1])),mx=Math.max(...S.map(x=>x[1]));
+  const sec=Array.from({length:10},(_,i)=>rms(S.filter(x=>x[0]>=i*1000&&x[0]<(i+1)*1000).map(x=>x[1])));
+  const score=Math.max(0,Math.min(100,Math.round(100-R*8)));
+  const avg=a=>a.reduce((s,v)=>s+v,0)/a.length;
+  const f3=avg(sec.slice(0,3)),l3=avg(sec.slice(7));
+  const grade=score>=85?'매우 안정적이에요! 🎉':score>=70?'안정적이에요 👍':score>=50?'보통이에요. 호흡과 어깨 힘을 점검해 보세요.':'흔들림이 많아요. 자세 점검표를 다시 확인해 보세요.';
+  let tip='';
+  if(l3>f3*1.5&&l3>1.5)tip='<br>⏱️ 뒤로 갈수록 흔들림이 커졌어요. 팔 피로 때문일 수 있으니 조준 시간을 줄이고 쉬어 가세요.';
+  else if(f3>l3*1.5&&f3>1.5)tip='<br>⏱️ 처음 3초가 더 흔들렸어요. 자세를 잡은 뒤 호흡을 고르고 시작해 보세요.';
+  STAB[pmode].push({score,R});stRender();
+  say('st-res',`${pmode==='one'?'☝️ 한 손':'🙌 두 손'} 안정성 <b style="font-size:20px">${score}점</b> · ${grade}<br><span class="mut">평균 흔들림 ${R.toFixed(1)}°/초 · 최대 ${mx.toFixed(1)}°/초</span>${tip}`,score>=70?'okc':'');
+  const bars=sec.map((v,i)=>{const h=Math.max(2,Math.min(1,v/12)*85);const c=v<3?'#22c55e':v<6?'#f59e0b':'#ef4444';
+    return `<rect x="${18+i*27}" y="${100-h}" width="20" height="${h}" rx="3" fill="${c}"/><text x="${28+i*27}" y="113" font-size="9" text-anchor="middle" fill="#475569">${i+1}초</text>`;}).join('');
+  $('st-svg').innerHTML=`<text x="150" y="12" font-size="10" text-anchor="middle" fill="#0f172a">초별 흔들림 (낮을수록 좋아요)</text>${bars}`;
+  $('st-svg').classList.remove('hide');
+}
+$('st-start').onclick=stStart;
+$('st-stop').onclick=()=>{if(st.run)st.cancel=true;};
+renderPose();stRender();
+/* ================= ④ 조준 연습 ================= */
+$('m-a').onclick=()=>{$('m-a').classList.add('on');$('m-s').classList.remove('on');$('p-a').classList.remove('hide');$('p-s').classList.add('hide');};
+$('m-s').onclick=()=>{$('m-s').classList.add('on');$('m-a').classList.remove('on');$('p-s').classList.remove('hide');$('p-a').classList.add('hide');};
+function draw(p){drawSight($(p+'-svg'),+$(p+'-x').value,+$(p+'-y').value);}
+function setPos(p){$(p+'-x').value=sgn()*rnd(10,35);$(p+'-y').value=sgn()*rnd(10,35);draw(p);}
+['pa','g'].forEach(p=>['x','y'].forEach(a=>$(p+'-'+a).oninput=()=>draw(p)));
+function paNew(){setPos('pa');$('pa-chk').disabled=false;say('pa-res','');}
+$('pa-new').onclick=paNew;
+$('pa-chk').onclick=()=>{
+  const x=+$('pa-x').value,y=+$('pa-y').value,tol=3,m=[];
+  if(x>tol)m.push('가늠쇠가 오른쪽으로 치우쳤어요. (오른쪽 빛틈이 좁아요)');
+  else if(x<-tol)m.push('가늠쇠가 왼쪽으로 치우쳤어요. (왼쪽 빛틈이 좁아요)');
+  if(y<-tol)m.push('가늠쇠가 가늠자보다 높아요.');
+  else if(y>tol)m.push('가늠쇠가 가늠자보다 낮아요.');
+  if(m.length)return say('pa-res','❌ '+m.join('<br>'),'badc');
+  G.align++;$('pa-cnt').textContent=G.align;$('pa-chk').disabled=true;
+  say('pa-res','✅ 정확해요! [새 문제]를 눌러 계속하세요.','okc');
+};
+let T6={cx:150,cy:95,r:55},s6lock=false;
+function s6new(){T6={cx:rnd(110,190),cy:rnd(90,105),r:55};draw6($('s6-svg'),T6);s6lock=false;}
+$('s6-svg').onclick=e=>{
+  if(s6lock)return;
+  const s=$('s6-svg'),b=s.getBoundingClientRect(),x=(e.clientX-b.left)*300/b.width,y=(e.clientY-b.top)*220/b.height,t=T6,bot=t.cy+t.r;
+  draw6(s,t,x,y);
+  if(Math.abs(x-t.cx)>9)return say('s6-res',x<t.cx?'조금 오른쪽이에요. 가늠쇠는 원의 정중앙 아래에 있어야 해요.':'조금 왼쪽이에요. 가늠쇠는 원의 정중앙 아래에 있어야 해요.','badc');
+  if(y<bot+3)return say('s6-res','너무 높아요. 가늠쇠가 검은 원에 닿았어요. 얇은 흰 틈을 남기세요.','badc');
+  if(y>bot+17)return say('s6-res','너무 낮아요. 흰 틈이 너무 넓어요. 원의 맨 아래에 더 가깝게!','badc');
+  G.six++;$('s6-cnt').textContent=G.six;s6lock=true;
+  say('s6-res','✅ 정확해요! 잠시 후 새 표적이 나옵니다.','okc');
+  setTimeout(s6new,1200);
+};
+paNew();s6new();
+/* ================= ⑤ 퀴즈 ================= */
+const Q=[
+ {q:'눈의 초점을 맞춰야 하는 것은?',o:['표적','가늠자','가늠쇠'],a:2},
+ {q:'올바른 조준선 정렬 모양은?',o:['가늠쇠가 가늠자보다 위로 튀어나온다','가늠쇠 윗면과 가늠자 윗면이 같은 높이이고 좌우 빛틈이 같다','가늠쇠가 한쪽으로 붙어 있다'],a:1},
+ {q:'검지를 방아쇠에 거는 때는?',o:['총을 잡자마자','조준이 끝나고 쏘기로 결정했을 때','친구와 이야기할 때'],a:1},
+ {q:'6시 조준에서 가늠쇠 윗면의 위치는?',o:['검은 원의 정중앙을 가린다','검은 원 맨 아래 중앙에 얇은 흰 틈을 두고 맞춘다','검은 원에서 멀리 떨어진 아래쪽'],a:1},
+ {q:'총을 다룰 때 총구가 향해야 하는 곳은?',o:['항상 안전한 방향(표적 쪽)','옆 친구','천장이나 바닥 아무 데나'],a:0}];
+function renderQ(){
+  $('qz').innerHTML=Q.map((q,i)=>`<div class="qq"><b>${i+1}. ${q.q}</b>${q.o.map((t,j)=>`<button type="button" data-q="${i}" data-o="${j}">${esc(t)}</button>`).join('')}</div>`).join('');
+  qzSum();
+}
+function qzSum(){$('qz-sum').textContent=`정답 ${G.qok} / 시도 ${G.qtry}`;}
+$('qz').onclick=e=>{
+  const b=e.target.closest('button[data-q]');if(!b||b.disabled)return;
+  const qi=+b.dataset.q,oi=+b.dataset.o;G.qtry++;
+  if(oi===Q[qi].a){G.qok++;b.classList.add('okc');b.parentNode.querySelectorAll('button').forEach(x=>x.disabled=true);}
+  else{b.classList.add('badc');b.disabled=true;}
+  qzSum();
+};
+$('qz-reset').onclick=()=>{G.qok=G.qtry=0;renderQ();};
+renderQ();
+/* ================= ⑥ 게임 ================= */
+const LV={'쉬움':5,'보통':3,'어려움':2};
+let glv='보통',gr=0,gs=0;
+$('g-lv').onclick=e=>{
+  const b=e.target.closest('button[data-lv]');if(!b||SW.run)return;
+  glv=b.dataset.lv;$('g-lv').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));
+};
+function gStop(){clearInterval(SW.id);SW.run=false;return performance.now()-SW.t0;}
+$('g-start').onclick=()=>{
+  gr=1;gs=0;$('g-round').textContent=1;$('g-score').textContent=0;say('g-res','');
+  $('g-play').classList.remove('hide');$('g-start').disabled=true;
+  setPos('g');SW.run=true;SW.t0=performance.now();
+  SW.id=setInterval(()=>$('g-time').textContent=fmtT(performance.now()-SW.t0),30);
+};
+$('g-cancel').onclick=()=>{
+  if(!SW.run)return;gStop();$('g-play').classList.add('hide');$('g-start').disabled=false;
+  say('g-res','게임을 중단했어요. 기록은 저장되지 않습니다.');
+};
+$('g-ok').onclick=()=>{
+  if(!SW.run)return;
+  const e=Math.hypot(+$('g-x').value,+$('g-y').value),tol=LV[glv];
+  const pt=e<=tol*.4?5:e<=tol*.8?4:e<=tol?3:e<=tol*2?2:e<=tol*3?1:0;
+  gs+=pt;$('g-score').textContent=gs;
+  if(gr>=10){
+    const ms=gStop();G.elapsed=ms;G.score=gs;G.level=glv;
+    $('g-time').textContent=fmtT(ms);$('g-play').classList.add('hide');$('g-start').disabled=false;
+    say('g-res',`🏁 끝! 기록 <b>${fmtT(ms)}</b> · 점수 <b>${gs}/50</b> (${glv})<br><button class="btn" id="g-go" type="button" style="margin-top:6px">기록 저장하러 가기 →</button>`,'okc');
+    $('g-go').onclick=()=>{$('rec-time').value=fmtT(ms);showTab('t-rec');};
+    return;
+  }
+  gr++;$('g-round').textContent=gr;setPos('g');
+};
+/* ================= ⑦ 실사 기록 (레이저 권총 10발 입력) ================= */
+const SH=[];
+const shotScore=(x,y)=>{const d=Math.hypot(x-150,y-150);return d>120?0:11-Math.max(1,Math.ceil(d/12));};
+function drawTarget(){
+  let s='';
+  for(let k=1;k<=10;k++){const r=(11-k)*12,blk=k>=7;
+    s+=`<circle cx="150" cy="150" r="${r}" fill="${blk?'#111':'#fff'}" stroke="${blk?'#fff':'#64748b'}" stroke-width="1"/>`;}
+  [1,2,3,4,5,6].forEach(k=>{s+=`<text x="${150+(11-k)*12-6}" y="153" font-size="8" text-anchor="middle" fill="#64748b">${k}</text>`;});
+  SH.forEach((o,i)=>{if(o.x!=null)s+=`<circle cx="${o.x}" cy="${o.y}" r="5" fill="#f97316" stroke="#fff" stroke-width="1.5"/><text x="${o.x}" y="${o.y+3}" font-size="7" font-weight="700" text-anchor="middle" fill="#fff">${i+1}</text>`;});
+  $('sh-svg').innerHTML=s;
+}
+function shRender(){
+  drawTarget();
+  const tot=SH.reduce((a,b)=>a+b.s,0),done=SH.length===10;
+  $('sh-cnt').textContent=SH.length;
+  $('sh-list').innerHTML=SH.length?SH.map((o,i)=>`<span class="chip${o.s>=9?' on':''}" style="cursor:default">${i+1}발 ${o.s}</span>`).join(''):'<span class="mut">아직 입력한 발이 없어요.</span>';
+  G.shots=SH.map(o=>o.s).join('-');G.shotTotal=done?tot:'';
+  say('sh-sum',`합계 <b>${tot}</b>점 · 평균 <b>${SH.length?(tot/SH.length).toFixed(1):'-'}</b>점${done?` · 🏁 10발 완료: <b>${tot}/100</b>`:''}`,done?'okc':'');
+  const P=SH.filter(o=>o.x!=null);
+  if(P.length<3){say('sh-ana','표적을 터치해서 3발 이상 입력하면 탄착군(맞은 위치) 분석을 해 드려요.');return;}
+  const mx=P.reduce((a,o)=>a+o.x,0)/P.length-150,my=P.reduce((a,o)=>a+o.y,0)/P.length-150;
+  const spread=P.reduce((a,o)=>a+Math.hypot(o.x-150-mx,o.y-150-my),0)/P.length;
+  const dir=[];
+  if(mx>8)dir.push('오른쪽');else if(mx<-8)dir.push('왼쪽');
+  if(my>8)dir.push('아래');else if(my<-8)dir.push('위');
+  let t=dir.length?`🎯 탄착군이 중앙보다 <b>${dir.join('·')}</b>쪽에 모였어요. 조준선 정렬과 6시 조준 위치를 ${dir.join('·')} 방향 기준으로 점검해 보세요.`:'🎯 탄착군 중심이 표적 중앙에 가까워요. 👍';
+  t+=spread>30?'<br>↔️ 탄착이 넓게 흩어졌어요. 방아쇠 조작과 자세 안정(③)을 점검해 보세요.':spread<15?'<br>✨ 탄착이 잘 모여 있어요.':'';
+  say('sh-ana',t);
+}
+$('sh-btns').innerHTML=Array.from({length:11},(_,i)=>`<button type="button" class="chip" data-s="${i}">${i}</button>`).join('');
+$('sh-btns').onclick=e=>{const b=e.target.closest('button[data-s]');if(!b||SH.length>=10)return;SH.push({s:+b.dataset.s});shRender();};
+$('sh-svg').onclick=e=>{
+  if(SH.length>=10)return;
+  const b=$('sh-svg').getBoundingClientRect();
+  const x=(e.clientX-b.left)*300/b.width,y=(e.clientY-b.top)*300/b.height;
+  SH.push({s:shotScore(x,y),x:Math.round(x),y:Math.round(y)});shRender();
+};
+$('sh-undo').onclick=()=>{SH.pop();shRender();};
+$('sh-reset').onclick=()=>{if(SH.length&&!confirm('입력한 기록을 지우고 새로 시작할까요?'))return;SH.length=0;shRender();};
+$('sh-go').onclick=()=>showTab('t-rec');
+shRender();
+/* ================= ⑧ 기록 저장 ================= */
+const HK='laserHist';
+const loadH=()=>{try{return JSON.parse(localStorage.getItem(HK)||'[]');}catch(e){return[];}};
+const saveH=h=>localStorage.setItem(HK,JSON.stringify(h.slice(-200)));
+const GOOD=['자세가 안정적이었다','조준선 정렬이 정확했다','호흡 조절이 좋았다','기록이 단축되었다','안전수칙을 잘 지켰다'];
+const IMP=['손목이 흔들렸다','가늠쇠 초점이 흐려졌다','6시 조준 위치가 불안정했다','방아쇠를 급하게 당겼다','자세 유지 시간이 짧았다'];
+const recMsg=(t,c)=>say('rec-msg',t,c);
+$('rec-lesson').innerHTML=Array.from({length:20},(_,i)=>`<option value="${i+1}">${i+1}차시</option>`).join('');
+$('rec-lesson').value=localStorage.getItem('lesson')||'1';
+function recRefresh(){
+  if(USER){$('rec-sid').value=USER.sid;$('rec-name').value=USER.name;}
+  if(!$('rec-time').value&&!SW.run&&G.elapsed!=null)$('rec-time').value=fmtT(G.elapsed);
+  renderSum();renderChips();renderHist();
+}
+function renderSum(){
+  $('rec-sum').innerHTML=`자세 점검 <b>${POSE[pmode].label} ${G.posture}/7</b> · 안정성 <b>${G.stab===''?'-':G.stab+'점'}</b> · 정렬 연습 <b>${G.align}</b> · 6시 조준 <b>${G.six}</b> · 퀴즈 <b>${G.qok}/${G.qtry}</b> · 게임 <b>${G.score===''?'-':G.score+'/50 ('+G.level+')'}</b> · 실사 <b>${G.shotTotal!==''?G.shotTotal+'/100':G.shots?'입력 중':'-'}</b>`;
+}
+function renderChips(){
+  [['gd-chips','rec-good',GOOD],['im-chips','rec-improve',IMP]].forEach(([c,t,L])=>{
+    const box=$(c);if(box.children.length)return;
+    L.forEach(x=>{const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=x;
+      b.onclick=()=>{const ta=$(t);ta.value=ta.value?ta.value+', '+x:x;};box.appendChild(b);});
+  });
+}
+function renderHist(){
+  const el=$('rec-hist');if(!USER){el.innerHTML='';return;}
+  const h=loadH().filter(d=>d.sid===USER.sid).slice(-8).reverse();
+  el.innerHTML=h.length?h.map(d=>`<div class="pc" style="display:block"><b>${d.sent?'✅':'⏳'} ${esc(d.date)} ${d.lesson?esc(d.lesson)+'차시 ':''}${esc(d.time||'-')}</b> <span class="mut">게임 ${d.score===''?'-':esc(d.score)} · 실사 ${d.shotTotal===''||d.shotTotal==null?'-':esc(d.shotTotal)} · 안정성 ${d.stab===''||d.stab==null?'-':esc(d.stab)} · 자세 ${esc(d.posture)}</span><br>👍 ${esc(d.good||'-')}<br>🔧 ${esc(d.improve||'-')}</div>`).join(''):'<p class="mut">이 기기에 저장된 기록이 없어요.</p>';
+}
+async function sendRec(d){
+  const url=getUrl();if(!url)return false;
+  try{
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({...d,action:'save',pin:USER.pin})});
+    const j=await r.json();return !!j.ok;
+  }catch(e){return false;}
+}
+$('rec-save').onclick=async()=>{
+  if(!USER)return;
+  const time=$('rec-time').value.trim(),good=$('rec-good').value.trim(),improve=$('rec-improve').value.trim();
+  if(time&&!/^\d{2}:\d{2}\.\d{2}$/.test(time))return recMsg('기록은 00:00.00 형식으로 입력하세요. (예: 01:23.45)','badc');
+  if(!time&&!good&&!improve&&G.stab===''&&G.shots==='')return recMsg('기록, 안정성, 실사, 잘한 점, 보완할 점 중 하나는 입력하세요.','badc');
+  const lesson=$('rec-lesson').value;localStorage.setItem('lesson',lesson);
+  const d={id:uid(),date:todayStr(),lesson,sid:USER.sid,name:USER.name,time,score:G.score,level:G.level,stab:G.stab,shotTotal:G.shotTotal,shots:G.shots,posture:POSE[pmode].label+' '+G.posture+'/7',align:G.align,six:G.six,quiz:G.qok+'/'+G.qtry,good,improve,sent:false};
+  $('rec-save').disabled=true;recMsg('저장 중…');
+  d.sent=await sendRec(d);
+  const h=loadH();h.push(d);saveH(h);GROW=null;
+  recMsg(d.sent?'✅ 스프레드시트에 저장했어요! [⑨ 내 성장]에서 변화를 확인해 보세요.':'⚠️ 전송 실패. 이 기기에 임시 저장했어요. 인터넷 연결 후 [미전송 다시 보내기]를 누르세요.',d.sent?'okc':'badc');
+  $('rec-time').value=$('rec-good').value=$('rec-improve').value='';
+  $('rec-save').disabled=false;renderHist();
+};
+$('rec-resend').onclick=async()=>{
+  if(!USER)return;
+  const h=loadH(),todo=h.filter(d=>!d.sent&&d.sid===USER.sid);
+  if(!todo.length)return recMsg('다시 보낼 기록이 없어요.');
+  recMsg('전송 중…');let n=0;
+  for(const d of todo){if(await sendRec(d)){d.sent=true;n++;}}
+  saveH(h);GROW=null;renderHist();
+  recMsg(`${todo.length}건 중 ${n}건 전송 완료`,n===todo.length?'okc':'badc');
+};
+$('rec-load').onclick=async()=>{
+  if(!USER)return;
+  const url=getUrl(),box=$('rec-srv');
+  if(!url){box.textContent='서버 주소가 설정되지 않았어요.';return;}
+  box.textContent='불러오는 중…';
+  try{
+    const r=await fetch(`${url}?date=${todayStr()}&sid=${encodeURIComponent(USER.sid)}&pin=${encodeURIComponent(USER.pin)}`),j=await r.json();
+    if(!j.ok)throw new Error(j.error||'오류');
+    box.innerHTML=j.rows.length?j.rows.map(x=>`<div class="pc" style="display:block"><b>${x.lesson?esc(x.lesson)+'차시 ':''}${esc(x.time||'-')}</b> 게임 ${esc(x.score===''?'-':x.score)} (${esc(x.level||'-')}) · 실사 ${esc(x.shotTotal===''?'-':x.shotTotal)} · 안정성 ${esc(x.stab===''?'-':x.stab)} · 자세 ${esc(x.posture)}<br>👍 ${esc(x.good||'-')}<br>🔧 ${esc(x.improve||'-')}</div>`).join(''):'오늘 저장된 기록이 없어요.';
+  }catch(e){box.textContent='불러오기 실패: '+e.message;}
+};
+$('rec-time').oninput=function(){this.value=this.value.replace(/[^\d:.]/g,'');};
+/* ================= ⑨ 내 성장 (그래프·최고·평균) ================= */
+let GROW=null,gmet='score';
+const numv=v=>(v===''||v==null||!isFinite(+v))?null:+v;
+const toSec=t=>{const m=/^(\d+):(\d{2})\.(\d{2})$/.exec(String(t||''));return m?(+m[1])*60+(+m[2])+(+m[3])/100:null;};
+const r1=n=>Math.round(n*10)/10;
+const MET={
+ score:{label:'게임 점수',max:50,unit:'점',better:'max',get:r=>numv(r.score),fmt:v=>r1(v)+'점'},
+ shot:{label:'실사 총점',max:100,unit:'점',better:'max',get:r=>numv(r.shotTotal),fmt:v=>r1(v)+'점'},
+ stab:{label:'안정성',max:100,unit:'점',better:'max',get:r=>numv(r.stab),fmt:v=>r1(v)+'점'},
+ time:{label:'게임 기록',max:0,unit:'초',better:'min',get:r=>toSec(r.time),fmt:v=>fmtT(v*1000)}
+};
+async function growLoad(force){
+  if(!USER)return;
+  if(GROW&&!force){growRender();return;}
+  $('gr-note').textContent='불러오는 중…';
+  let rows,src='server';
+  try{
+    const url=getUrl();if(!url)throw new Error('nourl');
+    const r=await fetch(`${url}?mode=hist&sid=${encodeURIComponent(USER.sid)}&pin=${encodeURIComponent(USER.pin)}`),j=await r.json();
+    if(!j.ok)throw new Error(j.error||'오류');
+    rows=j.rows;
+  }catch(e){rows=loadH().filter(d=>d.sid===USER.sid);src='local';}
+  GROW=rows;
+  $('gr-note').textContent=src==='server'?`☁️ 서버 기록 ${rows.length}건`:`⚠️ 서버 연결 실패 – 이 기기의 기록 ${rows.length}건만 표시`;
+  growRender();
+}
+function groupVals(groups,M){
+  return groups.map(g=>{const v=g.rows.map(M.get).filter(x=>x!=null);
+    return {k:g.k,v:v.length?(M.better==='max'?Math.max(...v):Math.min(...v)):null};});
+}
+function growRender(){
+  const rows=(GROW||[]).map((r,i)=>({r,i})).sort((a,b)=>String(a.r.date).localeCompare(String(b.r.date))||a.i-b.i).map(o=>o.r);
+  if(!rows.length){
+    $('gr-sum').innerHTML='<div class="sc" style="grid-column:1/3">아직 저장된 기록이 없어요. ⑧ 기록 저장에서 저장해 보세요.</div>';
+    $('gr-svg').innerHTML='';$('gr-tbl').innerHTML='';$('gr-cap').textContent='';return;
+  }
+  const groups=[],idx={};
+  rows.forEach(r=>{const k=r.lesson?r.lesson+'차시':String(r.date).slice(5);
+    if(!(k in idx)){idx[k]=groups.length;groups.push({k,rows:[]});}groups[idx[k]].rows.push(r);});
+  $('gr-sum').innerHTML=Object.keys(MET).map(key=>{
+    const m=MET[key],all=rows.map(m.get).filter(x=>x!=null);
+    if(!all.length)return `<div class="sc"><b>${m.label}</b><br><span class="mut">기록 없음</span></div>`;
+    const best=m.better==='max'?Math.max(...all):Math.min(...all),avg=all.reduce((a,b)=>a+b,0)/all.length;
+    const gv=groupVals(groups,m).filter(x=>x.v!=null);let ch='';
+    if(gv.length>=2){
+      const d=gv[gv.length-1].v-gv[0].v,good=m.better==='max'?d>0:d<0;
+      ch=d===0?'<br>처음→최근 변화 없음':`<br>처음→최근 <b class="${good?'up':'dn'}">${d>0?'+':''}${r1(d)}${m.unit} ${good?'▲ 향상':'▼ 하락'}</b>`;
+    }
+    return `<div class="sc"><b>${m.label}</b><br>🏆 최고 <b>${m.fmt(best)}</b><br>평균 ${m.fmt(avg)}<br><span class="mut">${all.length}회 기록</span>${ch}</div>`;
+  }).join('');
+  growChart(groups);
+  $('gr-tbl').innerHTML=`<table class="tb"><tr><th>차시</th><th>게임</th><th>기록</th><th>실사</th><th>안정성</th></tr>`+
+    groups.map(g=>{const c=key=>{const v=groupVals([g],MET[key])[0].v;return v==null?'-':MET[key].fmt(v);};
+      return `<tr><td>${esc(g.k)}</td><td>${c('score')}</td><td>${c('time')}</td><td>${c('shot')}</td><td>${c('stab')}</td></tr>`;}).join('')+`</table><p class="mut">같은 차시에 여러 번 저장했으면 가장 좋은 값을 보여 줍니다.</p>`;
+}
+function growChart(groups){
+  const M=MET[gmet],gv=groupVals(groups,M),vals=gv.map(x=>x.v).filter(v=>v!=null);
+  $('gr-cap').textContent=M.better==='min'?'※ 게임 기록(초)은 값이 낮을수록 빠른 기록입니다.':'';
+  if(!vals.length){$('gr-svg').innerHTML='<text x="160" y="100" font-size="13" text-anchor="middle" fill="#64748b">이 항목은 아직 기록이 없어요</text>';return;}
+  const W=320,H=200,L=40,R=14,T=16,B=32;let lo,hi;
+  if(M.max){lo=0;hi=M.max;}
+  else{lo=Math.min(...vals);hi=Math.max(...vals);const pad=Math.max((hi-lo)*.2,1);lo=Math.max(0,lo-pad);hi+=pad;}
+  const X=i=>gv.length===1?L+(W-L-R)/2:L+(W-L-R)*i/(gv.length-1);
+  const Y=v=>T+(H-T-B)*(1-(v-lo)/(hi-lo));
+  let s='';
+  for(let i=0;i<=4;i++){const v=lo+(hi-lo)*i/4,y=Y(v);
+    s+=`<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" stroke="#e2e8f0"/><text x="${L-4}" y="${y+3}" font-size="9" text-anchor="end" fill="#64748b">${r1(v)}</text>`;}
+  const pts=gv.map((g,i)=>g.v==null?null:[X(i),Y(g.v),g.v]).filter(Boolean);
+  if(pts.length>1)s+=`<polyline points="${pts.map(p=>p[0]+','+p[1]).join(' ')}" fill="none" stroke="#2563eb" stroke-width="2.5"/>`;
+  pts.forEach(p=>{s+=`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#2563eb"/><text x="${p[0]}" y="${p[1]-8}" font-size="9" text-anchor="middle" fill="#0f172a">${r1(p[2])}</text>`;});
+  const step=gv.length>8?2:1;
+  gv.forEach((g,i)=>{if(i%step===0)s+=`<text x="${X(i)}" y="${H-12}" font-size="9" text-anchor="middle" fill="#475569">${esc(g.k)}</text>`;});
+  $('gr-svg').innerHTML=s;
+}
+$('gr-chips').onclick=e=>{
+  const b=e.target.closest('button[data-m]');if(!b)return;
+  gmet=b.dataset.m;$('gr-chips').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));
+  if(GROW)growRender();
+};
+$('gr-reload').onclick=()=>growLoad(true);
+/* ================= 로그인 / 비밀번호 ================= */
+let USER=null;
+try{USER=JSON.parse(sessionStorage.getItem('user')||'null');}catch(e){}
+let lmode='login',lbusy=false;
+const SID_RE=/^[1-6](0[1-9]|[1-9]\d)(0[1-9]|[1-9]\d)$/;
+const lmsg=(t,c)=>say('lg-msg',t,c);
+function lgMode(m){
+  lmode=m;
+  $('lg-tab-login').classList.toggle('on',m==='login');
+  $('lg-tab-reg').classList.toggle('on',m==='reg');
+  document.querySelectorAll('.lg-reg').forEach(e=>e.style.display=m==='reg'?'':'none');
+  $('lg-go').textContent=m==='login'?'로그인':'비밀번호 만들고 시작하기';
+  lmsg(m==='login'?'학번과 비밀번호를 입력하세요.':'처음 접속이에요. 이름과 숫자 4자리 비밀번호를 만들어 주세요. (잊지 않게 기억하세요!)');
+}
+function applyUser(){
+  $('login').classList.toggle('hide',!!USER);
+  $('logout').classList.toggle('hide',!USER);
+  $('who').textContent=USER?`${USER.sid} ${USER.name}`:'';
+  $('rec-sid').readOnly=$('rec-name').readOnly=true;
+  if(USER){$('rec-sid').value=USER.sid;$('rec-name').value=USER.name;renderHist();}
+}
+async function lgGo(){
+  if(lbusy)return;
+  const sid=$('lg-sid').value.trim(),pin=$('lg-pin').value.trim(),name=$('lg-name').value.trim();
+  if(!SID_RE.test(sid))return lmsg('학번은 숫자 5자리예요. (1학년 1반 1번 → 10101)','badc');
+  if(!/^\d{4}$/.test(pin))return lmsg('비밀번호는 숫자 4자리예요.','badc');
+  if(lmode==='reg'){
+    if(!name)return lmsg('이름을 입력하세요.','badc');
+    if(pin!==$('lg-pin2').value.trim())return lmsg('비밀번호 확인이 달라요. 다시 입력하세요.','badc');
+  }
+  lbusy=true;$('lg-go').disabled=true;lmsg('확인 중…');
+  try{
+    const url=getUrl();if(!url)throw new Error('nourl');
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({action:lmode==='reg'?'register':'login',sid,pin,name})});
+    const j=await r.json();
+    if(!j.ok)throw new Error(j.error||'오류가 발생했어요.');
+    USER={sid,name:j.name,pin};
+    sessionStorage.setItem('user',JSON.stringify(USER));
+    $('lg-pin').value=$('lg-pin2').value='';
+    applyUser();
+  }catch(err){
+    lmsg(err.message==='nourl'?'⚠️ 서버 주소가 설정되지 않았어요. 선생님께 문의하세요.'
+      :err instanceof SyntaxError?'⚠️ 서버 응답이 올바르지 않아요. 선생님께 문의하세요.'
+      :err instanceof TypeError?'⚠️ 인터넷 연결을 확인해 주세요.'
+      :err.message,'badc');
+  }
+  lbusy=false;$('lg-go').disabled=false;
+}
+['lg-sid','lg-pin','lg-pin2'].forEach(id=>$(id).oninput=function(){this.value=this.value.replace(/\D/g,'');});
+$('lg-tab-login').onclick=()=>lgMode('login');
+$('lg-tab-reg').onclick=()=>lgMode('reg');
+$('lg-go').onclick=lgGo;
+$('login').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT')lgGo();});
+$('logout').onclick=()=>{sessionStorage.removeItem('user');location.reload();};
+lgMode('login');applyUser();
+</script>
+</body>
+</html>
