@@ -75,8 +75,9 @@ select.tin{background:#fff}
 .vshield.start::after{content:'▶';color:#fff;font-size:44px;background:#0009;border-radius:50%;width:76px;height:76px;display:flex;align-items:center;justify-content:center;padding-left:6px}
 .pre{white-space:pre-wrap}
 .ana b{display:block;margin-top:8px}
-/* 사격 손 선택 · 영점 잡기 */
-#handask{position:fixed;inset:0;background:#0f172ad9;z-index:90;display:flex;align-items:center;justify-content:center;padding:16px}
+/* 사격 손 선택 · 성별 선택 · 영점 잡기 */
+#handask,#genask{position:fixed;inset:0;background:#0f172ad9;z-index:90;display:flex;align-items:center;justify-content:center;padding:16px}
+#genask{z-index:95}
 .zc{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;margin:8px 0}
 .zc table{width:100%;border-collapse:collapse;font-size:13px}
 .zc td,.zc th{border:1px solid #e2e8f0;padding:4px 6px;text-align:center}
@@ -195,6 +196,7 @@ textarea.ex{min-height:170px}
   </div>
   <input id="lg-sid" class="tin wide" placeholder="학번 (1학년 1반 1번 → 10101)" maxlength="5" inputmode="numeric" autocomplete="off">
   <input id="lg-name" class="tin wide lg-reg" placeholder="이름 (예: 유영환)" maxlength="10" autocomplete="off">
+  <select id="lg-gender" class="tin wide lg-reg"><option value="">성별 선택</option><option value="남">남</option><option value="여">여</option></select>
   <input id="lg-pin" class="tin wide" type="password" placeholder="비밀번호 (숫자 4자리)" maxlength="4" inputmode="numeric" autocomplete="off">
   <input id="lg-pin2" class="tin wide lg-reg" type="password" placeholder="비밀번호 확인" maxlength="4" inputmode="numeric" autocomplete="off">
   <p><button class="btn big" id="lg-go" type="button">로그인</button></p>
@@ -207,6 +209,15 @@ textarea.ex{min-height:170px}
   <p class="mut">한 번만 고르면 이 기기에 기억해요. 나중에 위쪽 ✋ 버튼에서 바꿀 수 있어요.</p>
   <div class="row"><button class="btn big" id="hand-R" type="button">오른손</button></div>
   <div class="row" style="margin-top:8px"><button class="btn big sec" id="hand-L" type="button">왼손</button></div>
+</div>
+</div>
+<div id="genask" class="hide">
+<div class="lg-box">
+  <h2>🙋 성별을 선택하세요</h2>
+  <p class="mut">수행평가에서 기록(시간) 비교를 같은 학급·같은 성별끼리 하기 위해 한 번만 묻습니다. 한 번 저장하면 바꿀 수 없고, 잘못 눌렀다면 선생님께 알려 주세요.</p>
+  <div class="row"><button class="btn big" id="gen-M" type="button">남</button></div>
+  <div class="row" style="margin-top:8px"><button class="btn big sec" id="gen-F" type="button">여</button></div>
+  <div class="mut" id="gen-msg" style="margin-top:8px"></div>
 </div>
 </div>
 <header>
@@ -366,6 +377,8 @@ textarea.ex{min-height:170px}
 <!-- ⑦ 실사 기록 -->
 <section class="tab hide" id="t-shot">
 <div class="card"><h2>🔫 실제 레이저 권총 명중 기록</h2>
+  <div class="row modebar"><button class="chip on mode-chip" data-mode="practice" type="button">🏋️ 연습 모드</button><button class="chip mode-chip" data-mode="eval" type="button">📋 평가 모드</button></div>
+  <div class="res mode-note"></div>
   <p class="mut">레이저 권총으로 쏜 결과를 <b>10발</b> 입력합니다. 전자표적 화면과 같은 위치를 아래 표적에서 <b>터치</b>하면 점수가 자동 계산됩니다. 점수만 알면 아래 숫자 버튼(0~10)을 눌러도 됩니다. (위치를 터치해야 탄착군 분석이 정확해요)</p>
   <div class="split"><div class="pl">
   <div class="big-t" id="ss-time">00:00.00</div>
@@ -395,21 +408,24 @@ textarea.ex{min-height:170px}
 <!-- ⑧ 기록 저장 -->
 <section class="tab hide" id="t-rec">
 <div class="card"><h2>📝 오늘의 기록 저장</h2>
+  <div class="row modebar"><button class="chip on mode-chip" data-mode="practice" type="button">🏋️ 연습 모드</button><button class="chip mode-chip" data-mode="eval" type="button">📋 평가 모드</button></div>
+  <div class="res mode-note"></div>
   <div class="res" id="rec-sum"></div>
   <div class="split ns"><div class="pl">
   <div class="row" style="margin-top:6px">
    <input id="rec-sid" class="tin" style="width:110px" readonly placeholder="학번">
    <input id="rec-name" class="tin" style="width:110px" readonly placeholder="이름">
    <select id="rec-lesson" class="tin"></select>
+   <select id="rec-eval" class="tin hide"><option value="1">평가1</option><option value="2">평가2</option><option value="3">평가3</option><option value="4">평가4</option></select>
   </div>
-  <label class="mut">오늘의 기록 (스톱워치 자동 입력)</label>
+  <label class="mut" id="rec-time-lb">오늘의 기록 (스톱워치 자동 입력)</label>
   <input id="rec-time" class="tin wide" placeholder="00:00.00" maxlength="8" inputmode="decimal">
   <label class="mut">❤️ 사격 중 심박수 (운동 요약에서 최저, 최고 심박수를 확인해 쓰세요)</label>
   <div class="hr-row">
    <input id="rec-hr-min" class="tin" placeholder="최저 심박수 (bpm)" maxlength="3" inputmode="numeric" autocomplete="off">
    <input id="rec-hr-max" class="tin" placeholder="최고 심박수 (bpm)" maxlength="3" inputmode="numeric" autocomplete="off">
   </div>
-  </div><div class="pr">
+  </div><div class="pr" id="rec-reflect">
   <label class="mut">👍 잘한 점</label>
   <textarea id="rec-good" class="tin wide ex" rows="6" maxlength="500" placeholder="예) [점수] 10발 합계 72점, 지난 시간보다 8점 올랐다. 기록도 00:20 → 00:16으로 빨라졌다.&#10;예) [배운 내용] 가늠쇠를 홈 가운데에 맞추고 쏘니 탄이 모였다. 영점 잡기에서 탄이 모이는 방향을 정확히 찾았다.&#10;예) [자세·호흡] 자세가 안정적이었고, 숨을 반쯤 내쉬고 멈춘 뒤 쏘았다.&#10;예) [안전] 안전수칙을 잘 지켰다. (총구 방향, 방아쇠에 손가락 넣지 않기)"></textarea>
   <label class="mut">🔧 보완할 점</label>
@@ -419,7 +435,7 @@ textarea.ex{min-height:170px}
   <div class="res" id="rec-msg"></div>
 </div>
 <div class="card"><h2>🕘 이 기기의 최근 기록</h2><div id="rec-hist"></div></div>
-<div class="card"><h2>☁️ 서버(스프레드시트) 오늘 기록</h2><div id="rec-srv" class="mut">[오늘 서버 기록 보기]를 누르세요.</div></div>
+<div class="card"><h2 id="rec-srv-t">☁️ 서버(스프레드시트) 오늘 기록</h2><div id="rec-srv" class="mut">[오늘 서버 기록 보기]를 누르세요.</div></div>
 </section>
 <!-- ⑨ 내 성장 -->
 <section class="tab hide" id="t-grow">
@@ -465,6 +481,7 @@ const SS={run:false,t0:0,acc:0,id:0,saved:false};
 const st={run:false,cancel:false,measuring:false,got:false,cur:0,samples:[],t0:0,handler:null};
 let ytp=null,ytReady=false;
 let HAND='R';
+let MODE='practice';   /* 'practice'(연습) | 'eval'(평가) */
 const say=(id,t,c)=>{const m=$(id);m.className='res '+(c||'');m.innerHTML=t;};
 /* ================= 탭 ================= */
 const TABIDS=['t-safe','t-pose','t-stab','t-aim','t-quiz','t-game','t-zero','t-shot','t-rec','t-grow'];
@@ -826,6 +843,7 @@ const ssShow=()=>{$('ss-time').textContent=fmtT(ssNow());};
 const ssNote=(t,c)=>{say('ss-note',t,c);$('ss-note').classList.toggle('hide',!t);};
 function ssStart(){
   if(SS.run)return;
+  if(MODE==='eval'&&(SS.acc>0||SH.length>0)){ssNote('⚠️ 평가 모드는 처음부터 새로 시작해야 해요. 먼저 [↺ 초기화]를 누르세요.','badc');return;}
   SS.run=true;SS.t0=performance.now();SS.id=setInterval(ssShow,30);$('ss-start').disabled=true;
   ssNote('⏱ 측정 중… 10발을 다 입력하면 자동으로 멈추고 저장돼요.');
 }
@@ -836,8 +854,10 @@ function ssStop(){
 }
 function ssSave(ms){
   G.elapsed=ms;SS.saved=true;$('rec-time').value=fmtT(ms);
-  try{localStorage.setItem('laserDraft',JSON.stringify({sid:USER?USER.sid:'',date:todayStr(),ms}));}catch(e){}
-  ssNote(`✅ 기록 <b>${fmtT(ms)}</b> 이(가) 자동 저장되었어요. [⑧ 기록 저장]의 "오늘의 기록"에 들어 있어요.`,'okc');
+  if(MODE!=='eval'){try{localStorage.setItem('laserDraft',JSON.stringify({sid:USER?USER.sid:'',date:todayStr(),ms}));}catch(e){}}
+  ssNote(MODE==='eval'
+    ?`✅ 평가 기록 <b>${fmtT(ms)}</b> 측정 완료! [⑧ 기록 저장]에서 평가 번호와 심박수를 확인하고 저장하세요.`
+    :`✅ 기록 <b>${fmtT(ms)}</b> 이(가) 자동 저장되었어요. [⑧ 기록 저장]의 "오늘의 기록"에 들어 있어요.`,'okc');
 }
 function ssReset(){
   SS.run=false;clearInterval(SS.id);SS.acc=0;ssShow();$('ss-start').disabled=false;
@@ -853,7 +873,14 @@ function restoreDraft(){
     }
   }catch(e){}
 }
-$('ss-start').onclick=ssStart;$('ss-stop').onclick=ssStop;$('ss-reset').onclick=ssReset;
+$('ss-start').onclick=ssStart;$('ss-stop').onclick=ssStop;
+$('ss-reset').onclick=()=>{if(MODE==='eval'){SH.length=0;shRender();}ssReset();};   /* 평가 모드는 시간과 10발을 함께 초기화 */
+/* 평가 모드: 스톱워치를 켠 상태에서만 발을 입력할 수 있음 (true면 입력 막음) */
+function evGuard(){
+  if(MODE!=='eval'||SS.run)return false;
+  ssNote(SS.saved?'⚠️ 평가 모드는 이미 시간이 기록됐어요. 다시 하려면 [↺ 초기화]를 누르세요.':'⚠️ 평가 모드에서는 먼저 <b>▶ 시작</b>을 눌러야 입력할 수 있어요.','badc');
+  return true;
+}
 /* --- 표적 --- */
 const SH=[];
 const U=12; /* 점수 링 1칸 = 12 */
@@ -969,14 +996,14 @@ function shRender(){
   if(done&&SS.run)ssStop();
 }
 $('sh-btns').innerHTML=Array.from({length:11},(_,i)=>`<button type="button" class="chip" data-s="${i}">${i}</button>`).join('');
-$('sh-btns').onclick=e=>{const b=e.target.closest('button[data-s]');if(!b||SH.length>=10)return;SH.push({s:+b.dataset.s});shRender();};
+$('sh-btns').onclick=e=>{const b=e.target.closest('button[data-s]');if(!b||SH.length>=10||evGuard())return;SH.push({s:+b.dataset.s});shRender();};
 $('sh-svg').onclick=e=>{
-  if(SH.length>=10)return;
+  if(SH.length>=10||evGuard())return;
   const b=$('sh-svg').getBoundingClientRect();
   const x=(e.clientX-b.left)*300/b.width,y=(e.clientY-b.top)*300/b.height;
   SH.push({s:shotScore(x,y),x:Math.round(x),y:Math.round(y)});shRender();
 };
-$('sh-undo').onclick=()=>{SH.pop();shRender();};
+$('sh-undo').onclick=()=>{if(evGuard())return;SH.pop();shRender();};
 $('sh-reset').onclick=()=>{
   if(SH.length&&!confirm('입력한 기록을 지우고 새로 시작할까요? (스톱워치도 초기화돼요)'))return;
   SH.length=0;ssReset();coachShowSaved();shRender();
@@ -1207,18 +1234,59 @@ $('zq').onclick=e=>{
   else{b.classList.add('badc');b.disabled=true;}
 };
 zRender();
-/* ================= ⑧ 기록 저장 ================= */
-const HK='laserHist';
+/* ================= ⑧ 기록 저장 (연습 모드 / 평가 모드) ================= */
+const HK='laserHist',EK='laserEval';
 const loadH=()=>{try{return JSON.parse(localStorage.getItem(HK)||'[]');}catch(e){return[];}};
 const saveH=h=>localStorage.setItem(HK,JSON.stringify(h.slice(-200)));
+const loadE=()=>{try{return JSON.parse(localStorage.getItem(EK)||'[]');}catch(e){return[];}};
+const saveE=h=>localStorage.setItem(EK,JSON.stringify(h.slice(-100)));
 const recMsg=(t,c)=>say('rec-msg',t,c);
 /* 심박수 표시: 최저·최고 둘 다 있을 때만 "72~110", 없으면 "-" */
 const hrTxt=d=>(d.hrMin===''||d.hrMin==null||d.hrMax===''||d.hrMax==null)?'-':esc(d.hrMin)+'~'+esc(d.hrMax);
 $('rec-lesson').innerHTML=Array.from({length:20},(_,i)=>`<option value="${i+1}">${i+1}차시</option>`).join('');
 $('rec-lesson').value=localStorage.getItem('lesson')||'1';
+/* --- 모드 전환 --- */
+const MODE_NOTE={
+ practice:'🏋️ <b>연습 모드</b>: 기록은 [⑨ 내 성장]에 쓰이고, 수행평가 점수에는 반영되지 않아요.',
+ eval:'📋 <b>평가 모드</b>: [⑦ 실사 기록]에서 <b>▶ 시작</b> → 10발 입력(자동 정지)을 마친 뒤, [⑧ 기록 저장]에서 평가 번호·심박수를 확인하고 저장하세요. 저장한 평가가 수행평가 점수에 반영돼요. (같은 평가를 다시 저장하면 마지막 저장이 쓰여요)'
+};
+function syncTimeField(){
+  const t=$('rec-time'),ev=MODE==='eval';
+  t.readOnly=ev;
+  t.placeholder=ev?'⑦ 스톱워치가 자동 입력':'00:00.00';
+  if(ev)t.value=(SS.saved&&SS.acc>0)?fmtT(SS.acc):'';
+  else if(!t.value&&!SW.run&&!SS.run&&G.elapsed!=null)t.value=fmtT(G.elapsed);
+}
+function applyMode(){
+  const ev=MODE==='eval';
+  document.querySelectorAll('.mode-chip').forEach(b=>b.classList.toggle('on',b.dataset.mode===MODE));
+  document.querySelectorAll('.mode-note').forEach(n=>{n.className='res mode-note';n.innerHTML=MODE_NOTE[MODE];});
+  $('rec-lesson').classList.toggle('hide',ev);
+  $('rec-eval').classList.toggle('hide',!ev);
+  $('rec-reflect').classList.toggle('hide',ev);
+  $('rec-sum').classList.toggle('hide',ev);
+  $('ss-stop').classList.toggle('hide',ev);          /* 평가 모드는 10발 입력 시 자동 정지 */
+  $('rec-time-lb').textContent=ev?'⏱ 평가 기록 (스톱워치가 자동 입력, 직접 고칠 수 없어요)':'오늘의 기록 (스톱워치 자동 입력)';
+  $('rec-save').textContent=ev?'💾 평가 저장':'💾 저장';
+  $('rec-load').textContent=ev?'내 평가 서버 기록 보기':'오늘 서버 기록 보기';
+  $('rec-srv-t').textContent=ev?'☁️ 서버(스프레드시트) 내 평가 기록':'☁️ 서버(스프레드시트) 오늘 기록';
+  $('rec-srv').className='mut';$('rec-srv').textContent=ev?'[내 평가 서버 기록 보기]를 누르세요.':'[오늘 서버 기록 보기]를 누르세요.';
+  recMsg('');
+  syncTimeField();renderHist();
+}
+function setMode(m){
+  if(m===MODE)return;
+  if(SS.run){alert('스톱워치가 작동 중이에요. 10발 입력을 마치거나 [↺ 초기화]를 누른 뒤 바꾸세요.');return;}
+  if(m==='eval'&&(SH.length||SS.acc>0)){
+    if(!confirm('평가 모드는 처음부터 새로 시작해야 해요. 지금 입력한 실사 기록과 시간이 초기화돼요. 계속할까요?'))return;
+    SH.length=0;ssReset();coachShowSaved();shRender();
+  }
+  MODE=m;applyMode();
+}
+document.querySelectorAll('.mode-chip').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
 function recRefresh(){
   if(USER){$('rec-sid').value=USER.sid;$('rec-name').value=USER.name;}
-  if(!$('rec-time').value&&!SW.run&&!SS.run&&G.elapsed!=null)$('rec-time').value=fmtT(G.elapsed);
+  syncTimeField();
   renderSum();renderHist();
 }
 function renderSum(){
@@ -1226,9 +1294,26 @@ function renderSum(){
 }
 function renderHist(){
   const el=$('rec-hist');if(!USER){el.innerHTML='';return;}
+  if(MODE==='eval'){
+    const e=loadE().filter(d=>d.sid===USER.sid).slice(-8).reverse();
+    el.innerHTML=e.length?e.map(d=>`<div class="pc" style="display:block"><b>${d.sent?'✅':'⏳'} ${esc(d.date)} 평가${esc(d.ev)} ${esc(d.time)}</b> <span class="mut">10발 ${esc(d.total)}점 · ❤️ ${hrTxt(d)}</span></div>`).join(''):'<p class="mut">이 기기에 저장된 평가 기록이 없어요.</p>';
+    return;
+  }
   const h=loadH().filter(d=>d.sid===USER.sid).slice(-8).reverse();
   el.innerHTML=h.length?h.map(d=>`<div class="pc" style="display:block"><b>${d.sent?'✅':'⏳'} ${esc(d.date)} ${d.lesson?esc(d.lesson)+'차시 ':''}${esc(d.time||'-')}</b> <span class="mut">게임 ${d.score===''?'-':esc(d.score)} · 실사 ${d.shotTotal===''||d.shotTotal==null?'-':esc(d.shotTotal)} · 안정성 ${d.stab===''||d.stab==null?'-':esc(d.stab)} · 자세 ${esc(d.posture)} · ❤️ ${hrTxt(d)}</span><br>👍 ${esc(d.good||'-')}<br>🔧 ${esc(d.improve||'-')}</div>`).join(''):'<p class="mut">이 기기에 저장된 기록이 없어요.</p>';
 }
+/* 심박수 입력 검사 (연습·평가 모드 공통) */
+function readHr(){
+  const hrMin=$('rec-hr-min').value.trim(),hrMax=$('rec-hr-max').value.trim();
+  if(hrMin||hrMax){
+    if(!hrMin||!hrMax)return {err:'심박수는 최저와 최고를 둘 다 입력하거나, 둘 다 비워 두세요.'};
+    const a=+hrMin,b=+hrMax;
+    if(a<30||a>220||b<30||b>220)return {err:'심박수는 30~220 사이의 숫자로 입력하세요.'};
+    if(a>b)return {err:'최저 심박수가 최고 심박수보다 클 수 없어요. 두 값을 확인하세요.'};
+  }
+  return {hrMin,hrMax};
+}
+/* --- 연습 모드 저장 (기록 시트) --- */
 async function sendRec(d){
   const url=getUrl();if(!url)return false;
   try{
@@ -1239,17 +1324,12 @@ async function sendRec(d){
     return !!j.ok;
   }catch(e){return false;}
 }
-$('rec-save').onclick=async()=>{
+async function recSavePractice(){
   if(!USER)return;
   const time=$('rec-time').value.trim(),good=$('rec-good').value.trim(),improve=$('rec-improve').value.trim();
-  const hrMin=$('rec-hr-min').value.trim(),hrMax=$('rec-hr-max').value.trim();
   if(time&&!/^\d{2}:\d{2}\.\d{2}$/.test(time))return recMsg('기록은 00:00.00 형식으로 입력하세요. (예: 01:23.45)','badc');
-  if(hrMin||hrMax){
-    if(!hrMin||!hrMax)return recMsg('심박수는 최저와 최고를 둘 다 입력하거나, 둘 다 비워 두세요.','badc');
-    const a=+hrMin,b=+hrMax;
-    if(a<30||a>220||b<30||b>220)return recMsg('심박수는 30~220 사이의 숫자로 입력하세요.','badc');
-    if(a>b)return recMsg('최저 심박수가 최고 심박수보다 클 수 없어요. 두 값을 확인하세요.','badc');
-  }
+  const H=readHr();if(H.err)return recMsg(H.err,'badc');
+  const hrMin=H.hrMin,hrMax=H.hrMax;
   if(!time&&!good&&!improve&&!hrMin&&G.stab===''&&G.shots==='')return recMsg('기록, 안정성, 실사, 심박수, 잘한 점, 보완할 점 중 하나는 입력하세요.','badc');
   const lesson=$('rec-lesson').value;localStorage.setItem('lesson',lesson);
   const d={id:uid(),date:todayStr(),lesson,sid:USER.sid,name:USER.name,time,score:G.score,level:G.level,stab:G.stab,shotTotal:G.shotTotal,shots:G.shots,posture:POSE[pmode].label+' '+G.posture+'/7',align:G.align,six:G.six,quiz:G.qok+'/'+G.qtry,hrMin:hrMin===''?'':+hrMin,hrMax:hrMax===''?'':+hrMax,good,improve,sent:false};
@@ -1261,9 +1341,48 @@ $('rec-save').onclick=async()=>{
   else recMsg(d.sent?'✅ 스프레드시트에 저장했어요! [⑨ 내 성장]에서 변화를 확인해 보세요.':'⚠️ 전송 실패. 이 기기에 임시 저장했어요. 인터넷 연결 후 [미전송 다시 보내기]를 누르세요.',d.sent?'okc':'badc');
   $('rec-time').value=$('rec-good').value=$('rec-improve').value=$('rec-hr-min').value=$('rec-hr-max').value='';
   $('rec-save').disabled=false;renderHist();
-};
+}
+/* --- 평가 모드 저장 (수행평가 시트) --- */
+async function sendEval(d){
+  try{
+    const r=await fetch(getUrl(),{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({action:'evalSave',sid:d.sid,pin:USER.pin,id:d.id,date:d.date,ev:d.ev,shots:d.shots,time:d.time,hrMin:d.hrMin,hrMax:d.hrMax})});
+    const j=await r.json();
+    return {ok:!!j.ok,err:j.error||''};
+  }catch(e){return {ok:false,err:''};}
+}
+async function recSaveEval(){
+  if(!USER)return;
+  if(SS.run)return recMsg('스톱워치가 작동 중이에요. 10발 입력을 마치면 자동으로 멈춰요.','badc');
+  if(SH.length!==10||!SS.saved||!(SS.acc>0))return recMsg('평가 모드는 [⑦ 실사 기록]에서 ▶ 시작 → 10발 입력(자동 정지)을 마쳐야 저장할 수 있어요.','badc');
+  const H=readHr();if(H.err)return recMsg(H.err,'badc');
+  const ev=+$('rec-eval').value,total=SH.reduce((a,o)=>a+o.s,0),time=fmtT(SS.acc);
+  const prev=loadE().filter(d=>d.sid===USER.sid&&d.ev===ev);
+  let ask=`평가${ev}을(를) 저장할까요?\n기록 ${time} · 10발 ${total}점`;
+  if(H.hrMin==='')ask+='\n\n⚠️ 심박수가 비어 있어요. 이 평가의 심박 점수는 0점으로 계산돼요.';
+  if(prev.length)ask+=`\n\n이 기기에서 평가${ev}을(를) 이미 저장한 적이 있어요. 다시 저장하면 마지막 저장이 점수에 쓰여요.`;
+  if(!confirm(ask))return;
+  const d={id:uid(),date:todayStr(),ev,sid:USER.sid,name:USER.name,shots:SH.map(o=>o.s),time,total,hrMin:H.hrMin===''?'':+H.hrMin,hrMax:H.hrMax===''?'':+H.hrMax,sent:false};
+  $('rec-save').disabled=true;recMsg('저장 중…');
+  const r=await sendEval(d);d.sent=r.ok;
+  const h=loadE();h.push(d);saveE(h);
+  recMsg(d.sent?`✅ 평가${ev}을(를) 저장했어요! 다음 평가를 하려면 [⑦ 실사 기록]에서 새로 시작하세요.`
+    :'⚠️ 전송 실패'+(r.err?' ('+esc(r.err)+')':'')+'. 이 기기에 임시 저장했어요. 인터넷 연결 후 [미전송 다시 보내기]를 누르세요.',d.sent?'okc':'badc');
+  SH.length=0;ssReset();shRender();     /* 저장 후 초기화: 10발·스톱워치·시간칸 */
+  $('rec-hr-min').value=$('rec-hr-max').value='';
+  $('rec-save').disabled=false;renderHist();
+}
+$('rec-save').onclick=()=>MODE==='eval'?recSaveEval():recSavePractice();
 $('rec-resend').onclick=async()=>{
   if(!USER)return;
+  if(MODE==='eval'){
+    const h=loadE(),todo=h.filter(d=>!d.sent&&d.sid===USER.sid);
+    if(!todo.length)return recMsg('다시 보낼 평가 기록이 없어요.');
+    recMsg('전송 중…');let n=0;
+    for(const d of todo){const r=await sendEval(d);if(r.ok){d.sent=true;n++;}}
+    saveE(h);renderHist();
+    return recMsg(`${todo.length}건 중 ${n}건 전송 완료`,n===todo.length?'okc':'badc');
+  }
   const h=loadH(),todo=h.filter(d=>!d.sent&&d.sid===USER.sid);
   if(!todo.length)return recMsg('다시 보낼 기록이 없어요.');
   recMsg('전송 중…');let n=0,warn=false;
@@ -1277,6 +1396,12 @@ $('rec-load').onclick=async()=>{
   if(!url){box.textContent='서버 주소가 설정되지 않았어요.';return;}
   box.textContent='불러오는 중…';
   try{
+    if(MODE==='eval'){
+      const r=await fetch(`${url}?mode=eval&sid=${encodeURIComponent(USER.sid)}&pin=${encodeURIComponent(USER.pin)}`),j=await r.json();
+      if(!j.ok)throw new Error(j.error||'오류');
+      box.innerHTML=j.rows.length?j.rows.map(x=>`<div class="pc" style="display:block"><b>평가${esc(x.ev)}</b> ${esc(x.date)} · 1세트 ${esc(x.s1)} · 2세트 ${esc(x.s2)} · ${esc(x.time||'-')} · ❤️ ${hrTxt(x)}${x.chk?' · 교사확인 '+esc(x.chk):''}</div>`).join('')+'<div class="mut">같은 평가를 여러 번 저장했다면 마지막 저장이 점수에 쓰여요.</div>':'저장된 평가 기록이 없어요.';
+      return;
+    }
     const r=await fetch(`${url}?date=${todayStr()}&sid=${encodeURIComponent(USER.sid)}&pin=${encodeURIComponent(USER.pin)}`),j=await r.json();
     if(!j.ok)throw new Error(j.error||'오류');
     box.innerHTML=j.rows.length?j.rows.map(x=>`<div class="pc" style="display:block"><b>${x.lesson?esc(x.lesson)+'차시 ':''}${esc(x.time||'-')}</b> 게임 ${esc(x.score===''?'-':x.score)} (${esc(x.level||'-')}) · 실사 ${esc(x.shotTotal===''?'-':x.shotTotal)} · 안정성 ${esc(x.stab===''?'-':x.stab)} · 자세 ${esc(x.posture)} · ❤️ ${hrTxt(x)}<br>👍 ${esc(x.good||'-')}<br>🔧 ${esc(x.improve||'-')}</div>`).join(''):'오늘 저장된 기록이 없어요.';
@@ -1384,6 +1509,20 @@ function loadHand(){
 $('hand-R').onclick=()=>setHand('R',true);
 $('hand-L').onclick=()=>setHand('L',true);
 $('hand-btn').onclick=()=>$('handask').classList.remove('hide');
+/* ================= 성별 (수행평가 시간 점수의 비교 집단용, 서버에 한 번만 저장) ================= */
+async function setGender(g){
+  if(!USER)return;
+  $('gen-msg').textContent='저장 중…';
+  try{
+    const r=await fetch(getUrl(),{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'setGender',sid:USER.sid,pin:USER.pin,gender:g})});
+    const j=await r.json();
+    if(!j.ok)throw new Error(j.error||'오류');
+    USER.gender=j.gender;sessionStorage.setItem('user',JSON.stringify(USER));
+    $('genask').classList.add('hide');$('gen-msg').textContent='';
+  }catch(e){$('gen-msg').textContent='⚠️ 저장하지 못했어요: '+e.message+' (인터넷 연결을 확인하고 다시 눌러 주세요)';}
+}
+$('gen-M').onclick=()=>setGender('남');
+$('gen-F').onclick=()=>setGender('여');
 /* ================= 로그인 / 비밀번호 ================= */
 let lmode='login',lbusy=false;
 const SID_RE=/^[1-6](0[1-9]|[1-9]\d)(0[1-9]|[1-9]\d)$/;
@@ -1394,7 +1533,7 @@ function lgMode(m){
   $('lg-tab-reg').classList.toggle('on',m==='reg');
   document.querySelectorAll('.lg-reg').forEach(e=>e.style.display=m==='reg'?'':'none');
   $('lg-go').textContent=m==='login'?'로그인':'비밀번호 만들고 시작하기';
-  lmsg(m==='login'?'학번과 비밀번호를 입력하세요.':'처음 접속이에요. 이름과 숫자 4자리 비밀번호를 만들어 주세요. (잊지 않게 기억하세요!)');
+  lmsg(m==='login'?'학번과 비밀번호를 입력하세요.':'처음 접속이에요. 이름, 성별과 숫자 4자리 비밀번호를 만들어 주세요. (잊지 않게 기억하세요!)');
 }
 function applyUser(){
   $('login').classList.toggle('hide',!!USER);
@@ -1408,25 +1547,27 @@ function applyUser(){
     zRestore();          /* 오늘 하던 영점 잡기 복원 */
     coachShowSaved();    /* 오늘 받은 AI 코칭 복원 */
     shHint();
+    if(!USER.gender)$('genask').classList.remove('hide');   /* 성별을 아직 모르면 한 번 물어봄 */
   }
 }
 async function lgGo(){
   if(lbusy)return;
-  const sid=$('lg-sid').value.trim(),pin=$('lg-pin').value.trim(),name=$('lg-name').value.trim();
+  const sid=$('lg-sid').value.trim(),pin=$('lg-pin').value.trim(),name=$('lg-name').value.trim(),gender=$('lg-gender').value;
   if(!SID_RE.test(sid))return lmsg('학번은 숫자 5자리예요. (1학년 1반 1번 → 10101)','badc');
   if(!/^\d{4}$/.test(pin))return lmsg('비밀번호는 숫자 4자리예요.','badc');
   if(lmode==='reg'){
     if(!name)return lmsg('이름을 입력하세요.','badc');
+    if(!gender)return lmsg('성별을 선택하세요.','badc');
     if(pin!==$('lg-pin2').value.trim())return lmsg('비밀번호 확인이 달라요. 다시 입력하세요.','badc');
   }
   lbusy=true;$('lg-go').disabled=true;lmsg('확인 중…');
   try{
     const url=getUrl();if(!url)throw new Error('nourl');
     const r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify({action:lmode==='reg'?'register':'login',sid,pin,name})});
+      body:JSON.stringify({action:lmode==='reg'?'register':'login',sid,pin,name,gender})});
     const j=await r.json();
     if(!j.ok)throw new Error(j.error||'오류가 발생했어요.');
-    USER={sid,name:j.name,pin};
+    USER={sid,name:j.name,pin,gender:j.gender||''};
     sessionStorage.setItem('user',JSON.stringify(USER));
     $('lg-pin').value=$('lg-pin2').value='';
     applyUser();restoreDraft();
@@ -1444,7 +1585,7 @@ $('lg-tab-reg').onclick=()=>lgMode('reg');
 $('lg-go').onclick=lgGo;
 $('login').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT')lgGo();});
 $('logout').onclick=()=>{sessionStorage.removeItem('user');location.reload();};
-lgMode('login');applyUser();restoreDraft();
+lgMode('login');applyUser();restoreDraft();applyMode();
 </script>
 <script>
 /* 화면 켜짐 유지 (Screen Wake Lock): ⑦ 실사 기록의 스톱워치가 작동하는 동안만 화면이 꺼지지 않게 함 */
