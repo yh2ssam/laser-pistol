@@ -82,6 +82,91 @@ select.tin{background:#fff}
 .zc td,.zc th{border:1px solid #e2e8f0;padding:4px 6px;text-align:center}
 .zc th{background:#f1f5f9}
 .zdot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}
+
+/* =====================================================================
+   태블릿 최적화 (갤럭시 탭 S7 FE · 가로 스탠드 사용 기준)
+   - 폭 700px 미만(휴대폰)은 위의 기본 스타일 그대로입니다.
+   - 700px 이상: 글자·버튼·슬라이더를 터치하기 쉽게 키움
+   - 900px 이상(가로): 2단 화면
+   ===================================================================== */
+html{-webkit-text-size-adjust:100%}
+html,body{overscroll-behavior-y:contain}              /* 당겨서 새로고침 방지 */
+body{-webkit-tap-highlight-color:transparent}
+button,svg,nav{-webkit-user-select:none;user-select:none}
+.split>.pl,.split>.pr{min-width:0}
+
+@media (min-width:700px){
+ :root{--stk:72px}
+ body{font-size:17px}
+ header{padding:10px 20px}
+ h1{font-size:19px}
+ nav{gap:6px;padding:8px 12px;scrollbar-width:none}
+ nav::-webkit-scrollbar{display:none}
+ nav .chip{flex:1 0 auto;min-height:46px;font-size:14px;padding:6px 10px}
+ main{max-width:780px;padding:16px 20px 32px}
+ .card{padding:18px 20px;border-radius:14px;margin-bottom:16px}
+ .card h2{font-size:20px;margin-bottom:10px}
+ .chip{font-size:15px;min-height:44px;padding:8px 16px}
+ .btn{font-size:17px;min-height:50px;padding:10px 20px}
+ .btn.big{font-size:19px;min-height:56px}
+ .tin{font-size:17px;padding:12px}
+ .row{gap:10px}
+ .res{font-size:16px;padding:10px 14px}
+ .mut{font-size:14.5px}
+ .warn{padding:10px 14px}
+ .pc{padding:12px 0;gap:12px}
+ .pc input{width:28px;height:28px}
+ .qq button{font-size:17px;padding:13px 14px;margin:6px 0}
+ .big-t{font-size:44px}
+ .sg{gap:8px}
+ .sg .chip{min-height:54px;font-size:19px}
+ .sc{font-size:15px;padding:10px}
+ .tb{font-size:14px}
+ .tb th,.tb td{padding:6px}
+ .pdesc{font-size:15.5px}
+ .zc table{font-size:15px}
+ .mc b{font-size:14px}
+ .mc p{font-size:13.5px}
+ textarea.ex::placeholder{font-size:14px}
+ .lg-box{max-width:480px}
+ #z-svg,#sh-svg{max-width:540px!important}
+ .split>.pl{margin-bottom:10px}
+ /* 슬라이더: 손가락으로 잡기 쉬운 큰 손잡이 */
+ input[type=range]{-webkit-appearance:none;appearance:none;height:46px;background:transparent;margin:2px 0}
+ input[type=range]::-webkit-slider-runnable-track{height:10px;background:#cbd5e1;border-radius:5px}
+ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:38px;height:38px;border-radius:50%;background:#2563eb;border:3px solid #fff;box-shadow:0 1px 5px #0007;margin-top:-14px}
+ input[type=range]::-moz-range-track{height:10px;background:#cbd5e1;border-radius:5px}
+ input[type=range]::-moz-range-thumb{width:34px;height:34px;border-radius:50%;background:#2563eb;border:3px solid #fff;box-shadow:0 1px 5px #0007}
+}
+
+@media (min-width:900px){
+ :root{--stk:70px}
+ main{max-width:1240px;padding:16px 24px 32px}
+ main>.tab{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+ main>.tab>.card{margin-bottom:0}
+ /* ① */
+ #t-safe>.card:nth-child(3){grid-column:1/-1}
+ #t-safe .mgrid{grid-template-columns:repeat(3,1fr)}
+ /* ② 영상은 스크롤해도 따라옴 */
+ #t-pose>.card:first-child{position:sticky;top:var(--stk)}
+ /* 한 장짜리 탭은 전체 폭 */
+ #t-stab>.card,#t-game>.card,#t-quiz>.card,#t-shot>.card,#t-aim>.card,#t-rec>.card:first-child{grid-column:1/-1}
+ #t-stab>.card{max-width:880px;justify-self:center;width:100%}
+ #qz{display:grid;grid-template-columns:1fr 1fr;column-gap:28px}
+ /* 영점 잡기: 왼쪽 개념·생각해 보기 / 오른쪽 실습 */
+ #t-zero{grid-template-rows:auto 1fr}
+ #t-zero>.card:nth-child(1){grid-column:1;grid-row:1}
+ #t-zero>.card:nth-child(2){grid-column:2;grid-row:1/span 2}
+ #t-zero>.card:nth-child(3){grid-column:1;grid-row:2}
+ /* 좌우 분할 */
+ .split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:24px;align-items:start}
+ .split>.pl{position:sticky;top:var(--stk);margin-bottom:0}
+ .split.ns>.pl{position:static}
+ /* 표적은 화면 높이에 맞춰 한 화면에 다 보이게 */
+ #sh-svg{width:min(100%,max(300px,calc(100vh - 280px)))}
+ #z-svg{width:min(100%,max(300px,calc(100vh - 260px)))}
+ textarea.ex{min-height:170px}
+}
 </style>
 </head>
 <body>
@@ -192,18 +277,24 @@ select.tin{background:#fff}
 </div>
 <div class="card" id="p-a"><h2>↔️ 조준선 정렬 연습</h2>
   <p class="mut">슬라이더로 가늠쇠(빨강)를 움직여 가늠자 홈 한가운데, 윗면 높이를 맞춘 뒤 [정렬 확인]을 누르세요.</p>
+  <div class="split"><div class="pl">
   <svg id="pa-svg" viewBox="0 0 300 180"></svg>
+  </div><div class="pr">
   <label class="mut">좌우 (왼쪽 ↔ 오른쪽)</label><input class="sl" type="range" id="pa-x" min="-40" max="40" value="20">
   <label class="mut">상하 (위 ↔ 아래)</label><input class="sl" type="range" id="pa-y" min="-40" max="40" value="-20">
   <div class="row"><button class="btn" id="pa-chk" type="button">정렬 확인</button><button class="btn sec" id="pa-new" type="button">새 문제</button><span>성공 <b id="pa-cnt">0</b>회</span></div>
   <div class="res" id="pa-res"></div>
+  </div></div>
 </div>
 <div class="card hide" id="p-s"><h2>🔍 오조준 판별 연습</h2>
   <p class="mut">조준선이 이렇게 보일 때 쏘면 <b>탄은 표적의 어디로</b> 갈까요? 규칙: 가늠쇠가 향한 쪽으로 탄이 갑니다.</p>
+  <div class="split"><div class="pl">
   <svg id="mq-svg" viewBox="0 0 300 180"></svg>
+  </div><div class="pr">
   <div class="row" id="mq-opts" style="margin-top:8px"></div>
   <div class="row" style="margin-top:6px"><span>맞힌 횟수 <b id="mq-cnt">0</b>회</span></div>
   <div class="res" id="mq-res"></div>
+  </div></div>
 </div>
 </section>
 <!-- ⑤ 퀴즈 -->
@@ -220,12 +311,15 @@ select.tin{background:#fff}
   <div class="row" id="g-lv"><button class="chip" data-lv="쉬움" type="button">쉬움</button><button class="chip on" data-lv="보통" type="button">보통</button><button class="chip" data-lv="어려움" type="button">어려움</button></div>
   <p><button class="btn big" id="g-start" type="button">▶ 게임 시작</button></p>
   <div id="g-play" class="hide">
+   <div class="split"><div class="pl">
+   <svg id="g-svg" viewBox="0 0 300 180"></svg>
+   </div><div class="pr">
    <div class="big-t" id="g-time">00:00.00</div>
    <div class="row" style="justify-content:center">라운드 <b id="g-round">1</b>/10 · 점수 <b id="g-score">0</b>/50</div>
-   <svg id="g-svg" viewBox="0 0 300 180"></svg>
    <label class="mut">좌우</label><input class="sl" type="range" id="g-x" min="-40" max="40" value="0">
    <label class="mut">상하</label><input class="sl" type="range" id="g-y" min="-40" max="40" value="0">
    <div class="row"><button class="btn" id="g-ok" type="button">정렬 완료</button><button class="btn sec" id="g-cancel" type="button">그만하기</button></div>
+   </div></div>
   </div>
   <div class="res" id="g-res"></div>
 </div>
@@ -251,6 +345,7 @@ select.tin{background:#fff}
 <section class="tab hide" id="t-shot">
 <div class="card"><h2>🔫 실제 레이저 권총 명중 기록</h2>
   <p class="mut">레이저 권총으로 쏜 결과를 <b>10발</b> 입력합니다. 전자표적 화면과 같은 위치를 아래 표적에서 <b>터치</b>하면 점수가 자동 계산됩니다. 점수만 알면 아래 숫자 버튼(0~10)을 눌러도 됩니다. (위치를 터치해야 탄착군 분석이 정확해요)</p>
+  <div class="split"><div class="pl">
   <div class="big-t" id="ss-time">00:00.00</div>
   <div class="row" style="justify-content:center;margin:6px 0">
    <button class="btn" id="ss-start" type="button">▶ 시작</button>
@@ -259,6 +354,7 @@ select.tin{background:#fff}
   </div>
   <div class="res hide" id="ss-note"></div>
   <svg id="sh-svg" viewBox="0 0 300 300" style="max-width:380px;margin:8px auto 0"></svg>
+  </div><div class="pr">
   <div class="mut" style="margin-top:6px">숫자로 입력 (점수 버튼):</div>
   <div class="sg" id="sh-btns"></div>
   <div class="row" style="margin:6px 0"><b><span id="sh-cnt">0</span>/10발</b><button class="btn sec" id="sh-undo" type="button">↩ 마지막 발 취소</button><button class="btn sec" id="sh-reset" type="button">🗑 새 시리즈</button></div>
@@ -271,12 +367,14 @@ select.tin{background:#fff}
   <div class="row" style="margin-top:8px"><button class="btn" id="sh-ai" type="button">🤖 AI 상세 코칭 받기 (하루 1번)</button><span class="mut">10발을 모두 입력하면 쓸 수 있어요</span></div>
   <div class="res pre hide" id="sh-aires"></div>
   <p><button class="btn" id="sh-go" type="button">기록 저장하러 가기 →</button></p>
+  </div></div>
 </div>
 </section>
 <!-- ⑧ 기록 저장 -->
 <section class="tab hide" id="t-rec">
 <div class="card"><h2>📝 오늘의 기록 저장</h2>
   <div class="res" id="rec-sum"></div>
+  <div class="split ns"><div class="pl">
   <div class="row" style="margin-top:6px">
    <input id="rec-sid" class="tin" style="width:110px" readonly placeholder="학번">
    <input id="rec-name" class="tin" style="width:110px" readonly placeholder="이름">
@@ -289,10 +387,12 @@ select.tin{background:#fff}
    <input id="rec-hr-min" class="tin" placeholder="최저 심박수 (bpm)" maxlength="3" inputmode="numeric" autocomplete="off">
    <input id="rec-hr-max" class="tin" placeholder="최고 심박수 (bpm)" maxlength="3" inputmode="numeric" autocomplete="off">
   </div>
+  </div><div class="pr">
   <label class="mut">👍 잘한 점</label>
   <textarea id="rec-good" class="tin wide ex" rows="6" maxlength="500" placeholder="예) [점수] 10발 합계 72점, 지난 시간보다 8점 올랐다. 기록도 00:20 → 00:16으로 빨라졌다.&#10;예) [배운 내용] 가늠쇠를 홈 가운데에 맞추고 쏘니 탄이 모였다. 영점 잡기에서 탄이 모이는 방향을 정확히 찾았다.&#10;예) [자세·호흡] 자세가 안정적이었고, 숨을 반쯤 내쉬고 멈춘 뒤 쏘았다.&#10;예) [안전] 안전수칙을 잘 지켰다. (총구 방향, 방아쇠에 손가락 넣지 않기)"></textarea>
   <label class="mut">🔧 보완할 점</label>
   <textarea id="rec-improve" class="tin wide ex" rows="6" maxlength="500" placeholder="예) [점수] 7번째 발이 0점이었다. 방아쇠를 급하게 당겨서 크게 빗나갔다.&#10;예) [배운 내용] 탄이 오른쪽 위로 모였는데 조준점 보정(왼쪽 아래)을 아직 적용하지 못했다.&#10;예) [자세·호흡] 뒤쪽 발에서 팔이 지쳐 손목이 흔들렸고, 자세 유지 시간이 짧았다.&#10;예) [조준] 가늠쇠 초점이 흐려졌고, 가늠쇠 높이·좌우 정렬이 맞지 않았다."></textarea>
+  </div></div>
   <p class="row"><button class="btn" id="rec-save" type="button">💾 저장</button><button class="btn sec" id="rec-resend" type="button">미전송 다시 보내기</button><button class="btn sec" id="rec-load" type="button">오늘 서버 기록 보기</button></p>
   <div class="res" id="rec-msg"></div>
 </div>
@@ -328,7 +428,7 @@ window.addEventListener('error',function(e){
 <script>
 /* ================= 공통 ================= */
 const $=id=>document.getElementById(id);
-const SHEET_DEFAULT_URL='https://script.google.com/macros/s/AKfycbwMjxrQvD-OS-IyfYUEgBj3E6WPyjwWUpBtWV1UihmXJKgc06H9CA5AOerTeawcx72izQ/exec';
+const SHEET_DEFAULT_URL='https://script.google.com/macros/s/AKfycbyUSxEJXwu-UmG5hmwtSQp2rOXeCR8IAuVIOxsCrVWBwzIduzRyTYitXGSQA7aXAabwyQ/exec';
 const getUrl=()=>SHEET_DEFAULT_URL.trim();
 const p2=n=>String(n).padStart(2,'0');
 const todayStr=()=>{const d=new Date();return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());};
